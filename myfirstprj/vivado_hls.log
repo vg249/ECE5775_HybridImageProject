@@ -1,0 +1,11 @@
+@I [LIC-101] Checked out feature [HLS]
+@I [HLS-10] Running '/opt/xilinx/Vivado_HLS/2014.2/bin/unwrapped/lnx64.o/vivado_hls'
+            for user 'vg249' on host 'amdpool-04' (Linux_x86_64 version 2.6.18-406.el5) on Fri Nov 20 16:55:26 EST 2015
+            in directory '/home/student/vg249/myfirstprj'
+@I [HLS-10] Opening project '/home/student/vg249/myfirstprj/myfirst'.
+@I [HLS-10] Opening solution '/home/student/vg249/myfirstprj/myfirst/solution1'.
+@I [SYN-201] Setting up clock 'default' with a period of 10ns.
+@I [HLS-10] Setting target device to 'xc7k70tfbg484-1'
+make: `csim.exe' is up to date.
+@I [SIM-1] CSim file generation done with 0 errors.
+@I [LIC-101] Checked in feature [HLS]
