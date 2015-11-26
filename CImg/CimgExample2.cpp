@@ -32,7 +32,7 @@ void FourierTransform(CImg<double> Image){
 			Image(i,j) = real(F[i][j]);
 	}
 	CImgDisplay MultiplyDisplay(Image, "Apply Fourier Transform");
-        Image.save("Fourier Fucker");
+        Image.save("Fourier Transform");
 	system("PAUSE");
 }
 
@@ -131,11 +131,11 @@ int main(){
 //(b) Compute the two-dimensional discrete Fourier transform. 
 	FourierTransform(Result);
 //(c) Compute the inverse two-dimensional discrete Fourier transform. 
-    result=InverseFourierTransform(Image);
+        result=InverseFourierTransform(Image);
 //(d) Multiply the result by (-1)x+y and take the real part. 
-    Multiply(result);
+        Multiply(result);
 //(e) Compute the Fourier spectrum. 
-    FourierSpectrum(Image);
+        FourierSpectrum(Image);
 //partb:(a) Write a C++ function for the transfer function of the Gaussian highpass filter in Eq. (4.4-4). 
 	Gaussian(Result);
 	Multiply_HF(Result);

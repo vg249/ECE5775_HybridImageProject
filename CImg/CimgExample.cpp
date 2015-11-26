@@ -25,7 +25,7 @@ CImg<double> Multiply(CImg<double> Image){
 
 }
 
-void Gaussian(CImg<double> Image){
+void Gaussian(CImg<double> Image) {
         printf("Construct Gaussian highpass filter\n");
         complex<double> H[100][100];
         double D0, D;
@@ -43,12 +43,13 @@ void Gaussian(CImg<double> Image){
 
 int main() {
   
-  const CImg<double> Originalimg = CImg<double>("marilyn1.png").resize(256,256);
-  CImg<double> img = Multiply(Originalimg);
+  const CImg<double> img = CImg<double>("marilyn1.png").resize(256,256);
+//  CImg<double> img = Multiply(Originalimg);
 
   CImgList<double> F = img.get_FFT();
-//  cimglist_apply(F,shift)(img.width()/2,img.height()/2,0,0,2);
-  //CImgList<float> F = FT.get_FFT(true);
+  cimglist_apply(F,shift)(img.width()/2,img.height()/2,0,0,2);
+  
+//CImgList<float> F = FT.get_FFT(true);
 
   complex<double> H[256][256];
   double D0,D;
@@ -59,15 +60,18 @@ int main() {
       H[u][v] =(complex<double>)(1,0.0)- exp(complex<double>(0.0,-(double)((double)pow(D, 2)/ (double)(2* pow(D0,2)))));
        }
    }
-
-   for ( int u = 0; u < img.width() ; u++){
-	for ( int v = 0; v < img.height() ; v++)
-	    F[u][v] *= H[u][v];
-	}
-
-  const CImg<double> mag = ((F[0].get_pow(2) + F[1].get_pow(2)).sqrt() + 1).log().normalize(0,255);
+//complex<double> S[][];
+  // for ( int u = 0; u < img.width() ; u++){
+//	for ( int v = 0; v < img.height() ; v++)
+//	   printf("%f", F[u][v]);
+//*= H[u][v];
+//	}
+  
+  CImgList<double> FT = F.get_FFT(true);
+//  printf("%f",H[0][0]);
+  const CImg<double> mag = ((FT[0].get_pow(2) + FT[1].get_pow(2)).sqrt() + 1).log().normalize(0,255);
  //const CImg<unsigned char> mag = ((F[0].get_pow(2) + F[1].get_pow(2)).sqrt() + 1);
- //const CImg<unsigned char> mag = ((FT[0].get_pow(2) + FT[1].get_pow(2)).sqrt() + 1);
+//const CImg<unsigned char> mag = ((FT[0].get_pow(2) + FT[1].get_pow(2)).sqrt() + 1);
   CImgList<double> visu(img,mag);
   mag.save("fftimage.png");
   
