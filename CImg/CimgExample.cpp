@@ -9,19 +9,9 @@
 using namespace std;
 using namespace cimg_library;
 
-
-int main() {
- 
-  //Reading the image 
-  const CImg<double> img = CImg<double>("marilyn1.png").resize(256,256).save("original.png");
-
-  //Applying fourier transform. Referenced it frm CImg.h. 
-  //Returns list in 0 and 1 column. We assummed the values in 0 column are magnitude and 1 column are phase
-  CImgList<double> F = img.get_FFT();
-
-  //FFT Shift. Referenced from CImg.h
-  cimglist_apply(F,shift)(img.width()/2,img.height()/2,0,0,2);
-  
+CImgList<double> GaussFilter(int imgwidth, int imgheight, CImgList<double> F, bool High)
+{
+double dist;
   complex<double> H[256][256];   //Complex double array for saving Gaussian mask
 
   double D0,D;
@@ -31,37 +21,66 @@ int main() {
  //Calculating the gaussian mask. Magnitude and the Phase values are saved in seperate arrays.
  //Referenced from Online source. The mask is for low pass filter.
   int i = 0;
-  for ( int u = 0; u < img.width() ; u++){
-    for ( int v = 0; v < img.height() ; v++){
-      D0 = 10;
-//      D = sqrt(pow((double)u - ((double)img.width()/2),2) + pow((double)v - ((double)img.height()/2),2));
-//      H[u][v] =  complex<double>(1,0.0) - exp(complex<double>(0.0,-(double)((double)pow(D, 2)/ (double)(2* pow(D0,2)))));
-       H[u][v] = exp(-1* (pow((double)u - ((double)img.width()/2),2) + pow((double)v - ((double)img.height()/2),2))/(double)(2* pow(D0,2)));
+for (int u=0; u<imgwidth; u++)
+    for (int v=0; v<imgheight; v++) {
+      dist = sqrt((double)(u-imgwidth/2)*(u-imgwidth/2)+(v-imgheight/2)*(v-imgheight/2));
+      if (High == 1){
+      H[u][v] = 1 - exp(-((dist*dist)/(2*25*25)));}
+      else{
+      H[u][v] = exp(-((dist*dist)/(2*25*25)));}
       B[i] = std::real(H[u][v]);
       S[i] = std::imag(H[u][v]);
-      i++;
-       }
-   }
-      
+      i++; 
+    }
 
 //Multiplying the Magnitude of Gaussian Mask with Magnitude of FFT result
- for (int z=0; z< 65536; z++)
+ for (int z=0; z< (imgwidth*imgheight); z++)
  {
   F[0][z] = (F[0][z]*B[z]) - (F[1][z]*S[z]); 
   F[1][z] = (F[0][z]*S[z]) + (F[1][z]*B[z]); 
  }  
+return F;
+} 
+
+
+int main() {
+ 
+  //Reading the image 
+  const CImg<double> imglo = CImg<double>("marilyn1.png").resize(256,256).save("original.png");
+  const CImg<double> img = CImg<double>("einstein.png").resize(256,256).save("originallo.png");
+
+  //Applying fourier transform. Referenced it frm CImg.h. 
+  //Returns list in 0 and 1 column. We assummed the values in 0 column are magnitude and 1 column are phase
+  CImgList<double> F = img.get_FFT();
+  CImgList<double> Flo = imglo.get_FFT();
+
+  //FFT Shift. Referenced from CImg.h
+  cimglist_apply(F,shift)(img.width()/2,img.height()/2,0,0,2);
+  cimglist_apply(Flo,shift)(imglo.width()/2,imglo.height()/2,0,0,2);
+
+  F   = GaussFilter(img.width(), img.height(),F,1); 
+  Flo = GaussFilter(imglo.width(), imglo.height(),Flo,0); 
 
   cimglist_apply(F,shift)(-img.width()/2,-img.height()/2,0,0,2);
+  cimglist_apply(Flo,shift)(-imglo.width()/2,-imglo.height()/2,0,0,2);
 
   
 //Taking Inverse FFT of the Result
   CImgList<double> FT = F.get_FFT(true);
+  CImgList<double> FTlo = Flo.get_FFT(true);
+  
+   for(int b=0;b<(img.height()*img.width());b++)
+     {
+        FT[0][b] = FT[0][b]+FTlo[0][b];
+        FT[1][b] = FT[1][b]+FTlo[1][b];
+     }
 
-  const CImg<double> mag = ((FT[0].get_pow(2) + FT[1].get_pow(2)).sqrt() + 1).log().normalize(0,255);
+  const CImg<double> mag   = ((FT[0].get_pow(2) + FT[1].get_pow(2)).sqrt() + 1).log().normalize(0,255);
+//  const CImg<double> maglo = ((FTlo[0].get_pow(2) + FTlo[1].get_pow(2)).sqrt() + 1).log().normalize(0,255);
+ 
 
   CImgList<double> visu(img,mag);
   mag.save("fftimage.png");
-  
+//  maglo.save("fftimagelo.png");
 }
-
 
