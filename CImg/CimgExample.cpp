@@ -33,11 +33,13 @@ int main() {
   int i = 0;
   for ( int u = 0; u < img.width() ; u++){
     for ( int v = 0; v < img.height() ; v++){
-      D0 = 2;
-      D = sqrt(pow((double)u - ((double)img.width()/2),2) + pow((double)v - ((double)img.height()/2),2));
-      H[u][v] =  complex<double>(1,0.0) - exp(complex<double>(0.0,-(double)((double)pow(D, 2)/ (double)(2* pow(D0,2)))));
+      D0 = 10;
+//      D = sqrt(pow((double)u - ((double)img.width()/2),2) + pow((double)v - ((double)img.height()/2),2));
+//      H[u][v] =  complex<double>(1,0.0) - exp(complex<double>(0.0,-(double)((double)pow(D, 2)/ (double)(2* pow(D0,2)))));
+       H[u][v] = exp(-1* (pow((double)u - ((double)img.width()/2),2) + pow((double)v - ((double)img.height()/2),2))/(double)(2* pow(D0,2)));
       B[i] = std::real(H[u][v]);
       S[i] = std::imag(H[u][v]);
+      i++;
        }
    }
       
@@ -45,8 +47,8 @@ int main() {
 //Multiplying the Magnitude of Gaussian Mask with Magnitude of FFT result
  for (int z=0; z< 65536; z++)
  {
-  F[0][z] = (F[0][z]*B[i]) - (F[1][z]*S[i]); 
-  F[1][z] = (F[0][z]*S[i]) + (F[1][z]*B[i]); 
+  F[0][z] = (F[0][z]*B[z]) - (F[1][z]*S[z]); 
+  F[1][z] = (F[0][z]*S[z]) + (F[1][z]*B[z]); 
  }  
 
   cimglist_apply(F,shift)(-img.width()/2,-img.height()/2,0,0,2);

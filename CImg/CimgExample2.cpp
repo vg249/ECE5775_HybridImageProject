@@ -121,7 +121,7 @@ void Multiply_HF(CImg<double> Image){
 
 int main(){
 	char Pic[20];
-	CImg<double> Image("lena.jpg"),result;
+	CImg<double> Image("marilyn1.png"),result;
 	CImg<double> Result;
 	complex<double> Transform[50][50];
 	printf("Assignment III highpass Filtering\n");
