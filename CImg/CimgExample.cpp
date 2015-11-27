@@ -25,9 +25,9 @@ for (int u=0; u<imgwidth; u++)
     for (int v=0; v<imgheight; v++) {
       dist = sqrt((double)(u-imgwidth/2)*(u-imgwidth/2)+(v-imgheight/2)*(v-imgheight/2));
       if (High == 1){
-      H[u][v] = 1 - exp(-((dist*dist)/(2*25*25)));}
+      H[u][v] = 1 - exp(-((dist*dist)/(2*35*35)));}
       else{
-      H[u][v] = exp(-((dist*dist)/(2*25*25)));}
+      H[u][v] = exp(-((dist*dist)/(2*10*10)));}
       B[i] = std::real(H[u][v]);
       S[i] = std::imag(H[u][v]);
       i++; 
