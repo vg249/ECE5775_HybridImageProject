@@ -12,11 +12,11 @@ using namespace cimg_library;
 CImgList<double> GaussFilter(int imgwidth, int imgheight, CImgList<double> F, bool High)
 {
 double dist;
-  complex<double> H[256][256];   //Complex double array for saving Gaussian mask
+  complex<double> H[imgwidth][imgheight];   //Complex double array for saving Gaussian mask
 
   double D0,D;
-  double B[65536];   //65536 is the total number pixels available in the image
-  double S[65536];  
+  double B[imgwidth];   //65536 is the total number pixels available in the image
+  double S[imgheight];  
 
  //Calculating the gaussian mask. Magnitude and the Phase values are saved in seperate arrays.
  //Referenced from Online source. The mask is for low pass filter.
@@ -46,20 +46,30 @@ return F;
 int main() {
  
   //Reading the image 
-  const CImg<double> imglo = CImg<double>("marilyn1.png").resize(256,256).save("original.png");
-  const CImg<double> img = CImg<double>("einstein.png").resize(256,256).save("originallo.png");
+  const CImg<double> img = CImg<double>("marilyn1.png").resize(8,8).save("original.png");
+  const CImg<double> imglo = CImg<double>("einstein.png").resize(8,8).save("originallo.png");
+  const CImg<int> imgint = CImg<double>("marilyn1.png").resize(8,8).save("original.png");
 
+  
   //Applying fourier transform. Referenced it frm CImg.h. 
   //Returns list in 0 and 1 column. We assummed the values in 0 column are magnitude and 1 column are phase
   CImgList<double> F = img.get_FFT();
   CImgList<double> Flo = imglo.get_FFT();
 
+for(int m = 0; m < (img.width()*img.height()); m++)
+    printf( "%x : %f : %f\n", *((int*)&imgint[m]), F[0][m], F[1][m]) ;
+//    printf( "%f : %f : %f\n", img[m], F[0][m], F[1][m]) ;
+
   //FFT Shift. Referenced from CImg.h
   cimglist_apply(F,shift)(img.width()/2,img.height()/2,0,0,2);
   cimglist_apply(Flo,shift)(imglo.width()/2,imglo.height()/2,0,0,2);
 
+//    printf( "%x : %f : %f\n", *((int*)&imgint[m]), F[0][m], F[1][m]) ;
+
   F   = GaussFilter(img.width(), img.height(),F,1); 
   Flo = GaussFilter(imglo.width(), imglo.height(),Flo,0); 
+
+
 
   cimglist_apply(F,shift)(-img.width()/2,-img.height()/2,0,0,2);
   cimglist_apply(Flo,shift)(-imglo.width()/2,-imglo.height()/2,0,0,2);
