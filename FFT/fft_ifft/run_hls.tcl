@@ -92,6 +92,7 @@
 open_project proj -reset
 
 set CFLAGS "-L/usr/X11R6/lib -lm -lpthread -lX11"
+
 # Add the file for synthsis
 add_files fft_top.cpp
 
@@ -153,7 +154,7 @@ create_clock -period 3.3
 # Run C simulation
 # Put your linker options for CImg here
 #csim_design -ldflags ""
-csim_design
+csim_design -ldflags "-lm -lpthread -L/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft -L/usr/X11R6/lib -lX11"
 
 # Set any optimization directives
 config_dataflow -default_channel fifo 

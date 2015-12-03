@@ -127,20 +127,20 @@ int main()
     static cmpxData xn_input[SAMPLES];
     static cmpxData xk_output[SAMPLES];
 
-    const CImg<double> img = CImg<double>("marilyn1.png").resize(64,64);
+    const CImg<double> img = CImg<double>("/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/marilyn1.png").resize(32,32).save("/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/resize.png");
         
-	int NFFT = 12;
+	int NFFT = 10;
         int CP_LEN = 0; // length of the cyclic prefix to be inserted for each frame
         int FWD_INV = 1;
-        int sc_sch = 863;
+        int sc_sch = 0;
         int line_no = 1;
 
 //        FILE *stimfile;
 
-for(int m = 0; m < (4096); m++)
+for(int m = 0; m < 1024; m++)
 {
   double input_data_re;
-  input_data_re = img[0];
+  input_data_re = img[m];
   xn_input[m] = cmpxData(input_data_re, 0);
 	
 }
@@ -257,20 +257,20 @@ for(int m = 0; m < (4096); m++)
 //            if (dummy_re != xk_output[i].real().to_float())
 //            {
 //                error_num++;
-                cout << "Frame:" << " index: " << i 
-                     << "  RE Output: " << setprecision(14) << xk_output[i].real().to_float() << endl;
+            cout << "Frame:" << " index: " << i 
+                 << "  RE Output: " << setprecision(14) << xk_output[i].real() << endl;
 //            }
 //            golden = dummy_im;
 //            //if (golden != xk_output[i].im)
 //            if (dummy_im != xk_output[i].imag().to_float())
 //            {
 //                error_num++;
-                cout << "Frame:" << " index: " << i 
-                     << " vs. IM Output: " << setprecision(14) << xk_output[i].imag().to_float() << endl;
-            }
+           cout << "Frame:" << " index: " << i 
+                 << " vs. IM Output: " << setprecision(14) << xk_output[i].imag() << endl;
+          //  }
 //        }
 //        fclose(resfile);
-//    }
+    }
 
 //    cout << " ERRORS: " << error_num << endl;
 //    if ((error_num >0) || ovflo_all)
