@@ -46,9 +46,9 @@ return F;
 int main() {
  
   //Reading the image 
-  const CImg<double> img = CImg<double>("marilyn1.png").resize(8,8).save("original.png");
+  const CImg<double> img = CImg<double>("marilyn1.png").resize(64,64).save("original.png");
   const CImg<double> imglo = CImg<double>("einstein.png").resize(8,8).save("originallo.png");
-  const CImg<int> imgint = CImg<double>("marilyn1.png").resize(8,8).save("original.png");
+  const CImg<int> imgint = CImg<double>("marilyn1.png").resize(64,64).save("original.png");
 
   
   //Applying fourier transform. Referenced it frm CImg.h. 
