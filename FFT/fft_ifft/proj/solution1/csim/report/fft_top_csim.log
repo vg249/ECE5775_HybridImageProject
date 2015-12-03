@@ -1,0 +1,87 @@
+   Compiling ../../../../fft_tb.cpp in debug mode
+   Compiling ../../../../fft_top.cpp in debug mode
+   Generating csim.exe
+obj/fft_tb.o: In function `cimg_library::CImgDisplay::screen_width()':
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7153: undefined reference to `XOpenDisplay'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7157: undefined reference to `XCloseDisplay'
+obj/fft_tb.o: In function `cimg_library::CImgDisplay::screen_height()':
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7174: undefined reference to `XOpenDisplay'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7178: undefined reference to `XCloseDisplay'
+obj/fft_tb.o: In function `cimg_library::CImgDisplay::_handle_events(_XEvent const*)':
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7205: undefined reference to `XUnmapWindow'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7211: undefined reference to `XCheckWindowEvent'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7216: undefined reference to `XResizeWindow'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7226: undefined reference to `XCheckWindowEvent'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7230: undefined reference to `XGetWindowAttributes'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7231: undefined reference to `XSync'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7232: undefined reference to `XSetInputFocus'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7244: undefined reference to `XCheckWindowEvent'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7257: undefined reference to `XCheckWindowEvent'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7261: undefined reference to `XLookupString'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7266: undefined reference to `XQueryKeymap'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7271: undefined reference to `XLookupString'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7276: undefined reference to `XCheckWindowEvent'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7282: undefined reference to `XCheckWindowEvent'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7287: undefined reference to `XCheckWindowEvent'
+obj/fft_tb.o: In function `cimg_library::CImgDisplay::_events_thread(void*)':
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7304: undefined reference to `XCheckTypedEvent'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7308: undefined reference to `XCheckMaskEvent'
+obj/fft_tb.o: In function `cimg_library::CImgDisplay::_set_colormap(unsigned long&, unsigned int)':
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7351: undefined reference to `XStoreColors'
+obj/fft_tb.o: In function `cimg_library::CImgDisplay::_map_window()':
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7360: undefined reference to `XMapRaised'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7362: undefined reference to `XWindowEvent'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7369: undefined reference to `XGetWindowAttributes'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7370: undefined reference to `XSync'
+obj/fft_tb.o: In function `cimg_library::CImgDisplay::_paint(bool)':
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7391: undefined reference to `XSendEvent'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7398: undefined reference to `XPutImage'
+obj/fft_tb.o: In function `cimg_library::CImgDisplay::_init_fullscreen()':
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7507: undefined reference to `XCreateWindow'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7513: undefined reference to `XCreateImage'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7515: undefined reference to `XSelectInput'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7516: undefined reference to `XMapRaised'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7517: undefined reference to `XWindowEvent'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7524: undefined reference to `XPutImage'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7527: undefined reference to `XGetWindowAttributes'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7528: undefined reference to `XSync'
+obj/fft_tb.o: In function `cimg_library::CImgDisplay::_desinit_fullscreen()':
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7535: undefined reference to `XUngrabKeyboard'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7545: undefined reference to `XDestroyWindow'
+obj/fft_tb.o: In function `cimg_library::CImgDisplay::_assign(unsigned int, unsigned int, char const*, unsigned int, bool, bool)':
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7573: undefined reference to `XOpenDisplay'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7588: undefined reference to `XVisualIDFromVisual'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7590: undefined reference to `XGetVisualInfo'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7593: undefined reference to `XFree'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7617: undefined reference to `XCreateWindow'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7619: undefined reference to `XCreateSimpleWindow'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7623: undefined reference to `XSelectInput'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7625: undefined reference to `XStoreName'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7627: undefined reference to `XCreateColormap'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7629: undefined reference to `XSetWindowColormap'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7633: undefined reference to `XAllocClassHint'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7636: undefined reference to `XSetClassHint'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7637: undefined reference to `XFree'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7679: undefined reference to `XCreateImage'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7682: undefined reference to `XInternAtom'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7683: undefined reference to `XInternAtom'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7684: undefined reference to `XSetWMProtocols'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7686: undefined reference to `XGrabKeyboard'
+obj/fft_tb.o: In function `cimg_library::CImgDisplay::assign()':
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7706: undefined reference to `XDestroyWindow'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7720: undefined reference to `XFreeColormap'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7722: undefined reference to `XSync'
+obj/fft_tb.o: In function `cimg_library::CImgDisplay::resize(int, int, bool)':
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7802: undefined reference to `XResizeWindow'
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7803: undefined reference to `XGetWindowAttributes'
+obj/fft_tb.o: In function `cimg_library::CImgDisplay::move(int, int)':
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7865: undefined reference to `XMoveWindow'
+obj/fft_tb.o: In function `void cimg_library::CImgDisplay::_resize<unsigned char>(unsigned char, unsigned int, unsigned int, bool)':
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7458: undefined reference to `XCreateImage'
+obj/fft_tb.o: In function `void cimg_library::CImgDisplay::_resize<unsigned short>(unsigned short, unsigned int, unsigned int, bool)':
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7458: undefined reference to `XCreateImage'
+obj/fft_tb.o: In function `void cimg_library::CImgDisplay::_resize<unsigned int>(unsigned int, unsigned int, unsigned int, bool)':
+/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/proj/solution1/csim/build/../../../../CImg.h:7458: undefined reference to `XCreateImage'
+collect2: ld returned 1 exit status
+make: *** [csim.exe] Error 1
+@E [SIM-1] 'csim_design' failed: compilation error(s).
