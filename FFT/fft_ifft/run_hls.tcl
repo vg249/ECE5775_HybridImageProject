@@ -151,6 +151,8 @@ set_part  {xc7k160tfbg484-1}
 create_clock -period 3.3
 
 # Run C simulation
+# Put your linker options for CImg here
+#csim_design -ldflags ""
 csim_design
 
 # Set any optimization directives
