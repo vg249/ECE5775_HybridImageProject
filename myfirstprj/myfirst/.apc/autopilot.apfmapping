@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
-  <source>
-    <originFiles name="opencv.cpp" path="/home/student/vg249/opencv.cpp"/>
-  </source>
-  <testbench>
-    <originFiles name="opencv_test.cpp" path="/home/student/vg249/opencv_test.cpp"/>
-  </testbench>
-</autopilotfilemapping:AutoPilotFileMapping>
