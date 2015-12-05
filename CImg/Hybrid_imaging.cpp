@@ -52,40 +52,46 @@ return F;
 int main() {
  
   //Reading the image 
-  const CImg<double> imglo = CImg<double>("marilyn1.png").resize(256,256).save("original.png");
+//  const CImg<double> imglo = CImg<double>("marilyn1.png").resize(256,256).save("original.png");
   const CImg<double> img = CImg<double>("einstein.png").resize(256,256).save("originallo.png");
-
-  //Applying fourier transform. Referenced it frm CImg.h. 
-  //Returns list in 0 and 1 column. We assummed the values in 0 column are magnitude and 1 column are phase
+//
+//  //Applying fourier transform. Referenced it frm CImg.h. 
+//  //Returns list in 0 and 1 column. We assummed the values in 0 column are magnitude and 1 column are phase
   CImgList<double> F = img.get_FFT();
-  CImgList<double> Flo = imglo.get_FFT();
-
-  //FFT Shift. Referenced from CImg.h
-  cimglist_apply(F,shift)(img.width()/2,img.height()/2,0,0,2);
-  cimglist_apply(Flo,shift)(imglo.width()/2,imglo.height()/2,0,0,2);
-
-  F   = GaussFilter(img.width(), img.height(),F,1); 
-  Flo = GaussFilter(imglo.width(), imglo.height(),Flo,0); 
-
-  cimglist_apply(F,shift)(-img.width()/2,-img.height()/2,0,0,2);
-  cimglist_apply(Flo,shift)(-imglo.width()/2,-imglo.height()/2,0,0,2);
-
-  
-//Taking Inverse FFT of the Result
+//  CImgList<double> Flo = imglo.get_FFT();
+//
+//  //FFT Shift. Referenced from CImg.h
+//  cimglist_apply(F,shift)(img.width()/2,img.height()/2,0,0,2);
+//  cimglist_apply(Flo,shift)(imglo.width()/2,imglo.height()/2,0,0,2);
+//
+//  F   = GaussFilter(img.width(), img.height(),F,1); 
+//  Flo = GaussFilter(imglo.width(), imglo.height(),Flo,0); 
+//
+//  cimglist_apply(F,shift)(-img.width()/2,-img.height()/2,0,0,2);
+//  cimglist_apply(Flo,shift)(-imglo.width()/2,-imglo.height()/2,0,0,2);
+//
+//  
+////Taking Inverse FFT of the Result
   CImgList<double> FT = F.get_FFT(true);
-  CImgList<double> FTlo = Flo.get_FFT(true);
-  
-   for(int b=0;b<(img.height()*img.width());b++)
-     {
-        FT[0][b] = FT[0][b]+FTlo[0][b];
-        FT[1][b] = FT[1][b]+FTlo[1][b];
-     }
-
-  const CImg<double> mag   = ((FT[0].get_pow(2) + FT[1].get_pow(2)).sqrt() + 1).log().normalize(0,200);
+//  CImgList<double> FTlo = Flo.get_FFT(true);
+//  
+//   for(int b=0;b<(img.height()*img.width());b++)
+//     {
+//        FT[0][b] = FT[0][b]+FTlo[0][b];
+//        FT[1][b] = FT[1][b]+FTlo[1][b];
+//     }
+//
+  const CImg<double> mag   = ((FT[0].get_pow(2) + FT[1].get_pow(2)).sqrt() + 1);
 //  const CImg<double> maglo = ((FTlo[0].get_pow(2) + FTlo[1].get_pow(2)).sqrt() + 1).log().normalize(0,255);
+
+   for(int b=0;b<(img.height()*img.width());b++)
+   {
+	printf("%f\n",F[b]);
+   }
+
  
 
-  CImgList<double> visu(img,mag);
+//  CImgList<double> visu(img,mag);
   mag.save("hybrid_image.png");
 //  maglo.save("fftimagelo.png");
 }
