@@ -96,160 +96,133 @@ ALL TIMES.
 #include "fft_top.h"
 #include <stdio.h>
 
+// For reading from stimulus input files
 #include <fstream>
 #include <string>
 #include <sstream>
 
+#include "CImg.h"
+#include <cmath>
+#include <iostream>
+#include <string.h>
+#include <complex>
+#include "hls_math.h"
+#define PI 3.14159
+
+
 using namespace std;
+using namespace cimg_library;
 
 #define BUF_SIZE 64
+
+void fftshift(complex<double> out[65536], complex<double> in[65536], int xdim, int ydim, int xshift, int yshift)
+{
+int ii = 0;
+int jj = 0;
+  for (int i =0; i < xdim; i++) {
+    ii = (i + xshift) % xdim;
+    for (int j = 0; j < ydim; j++) {
+      jj = (j + yshift) % ydim;
+      out[ii * ydim + jj] = in[i * ydim + j];
+    }
+  }
+}
+
+void ifftshift(complex<double> out[65536], complex<double> in[65536], int xdim, int ydim, int xshift, int yshift)
+{
+int ii = 0;
+int jj = 0;
+  for (int i = (xdim-1); i >= 0; i--) {
+    ii = (i + xshift) % xdim;
+    for (int j = (ydim-1); j >= 0; j--) {
+      jj = (j + yshift) % ydim;
+      out[ii * ydim + jj] = in[i * ydim + j];
+    }
+  }
+}
+
+
 int main()
 {
     const int SIM_FRAMES = 20;
-    const int SAMPLES = (1 << FFT_NFFT_MAX);
+    const int SAMPLES = (1 << 3);
 
     int error_num = 0;
     bool ovflo_all = false;
     char res_filename[BUF_SIZE]={0};
     char dat_filename[BUF_SIZE]={0};
-    static cmpxDataIn xn_input[SAMPLES];
-    static cmpxDataOut xk_output[SAMPLES];
+//    static cmpxDataIn xn_input[8];
+    complex<double> xn_input[65536];
+    complex<double> xnf_output[65536];
+    complex<double> xnif_output[65536];
 
-    for (int frame = 0; frame < SIM_FRAMES; ++frame)
-    {
-        int NFFT = 0;
+    const CImg<double> img = CImg<double>("/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/marilyn1.png").resize(256,256).save("/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_single/resize.png");
+        
+	int NFFT = 16;
         int CP_LEN = 0; // length of the cyclic prefix to be inserted for each frame
-        int FWD_INV = 0;
+        int FWD_INV = 1;
         int sc_sch = 0;
         int line_no = 1;
-        FILE *stimfile;
+        const double sc = ldexp(1.0, FFT_INPUT_WIDTH-1);
 
-        // Open stimulus .dat file for reading
-        sprintf(dat_filename, "stimulus_%02d", frame);
-        strcat(dat_filename,".dat");
-        stimfile = fopen(dat_filename, "r");
-        
-        int tmp_re, tmp_im;
-        float dummy_re, dummy_im;
-        const int max = 1 << FFT_INPUT_WIDTH; // might not work for > 32 bits!
-        const int max_half_minus_one = (max/2)-1;
-        // Scaling factor to get integer into -1 <= x < +1 range 
-        const double sc = ldexp(1.0, FFT_INPUT_WIDTH-1); // might not work for > 32 bits!
+//******************************Converting the pixels to Complex data as FFT function take Complex Input*********************************
 
-        if (stimfile == NULL)
-        {
-            printf("ERROR: Can't open %s\n",dat_filename);
-            exit(999);
-        }
-        else
-        {
-            printf("INFO: Reading %s\n",dat_filename);
-            while (fgetc(stimfile) != EOF && line_no < SAMPLES+5)
-            {
-                switch (line_no)
-                {
-                case 1:
-                  // Point size
-                  fscanf(stimfile,"%X",&NFFT);
-                  printf("NFFT %d\n",NFFT);
-                  break;
-                case 2:
-                  // CP length
-                  fscanf(stimfile,"%X",&CP_LEN);
-                  printf("CP_LEN %d\n",CP_LEN);
-                  break;
-                case 3:
-                  // fwd-inv
-                  fscanf(stimfile,"%X",&FWD_INV);
-                  printf("FWD_INV %d\n",FWD_INV);
-                  break;
-                case 4:
-                  // Scaling schedule sc_sch
-                  fscanf(stimfile,"%X",&sc_sch);
-                  printf("sc_sch %X\n",sc_sch);
-                  break;
-                default:
-                    // hex data (first 2 columns)
-                    fscanf(stimfile,"%x %x %f %f",&tmp_re,&tmp_im,&dummy_re,&dummy_im);
-                    //printf("%x %x\n",tmp_re,tmp_im);
+for(int m = 0; m < 65536 ;m++)
+{
+  double input_data_re;
+  input_data_re = img[m];
+  xn_input[m] = complex<double>(input_data_re, 0);
+	
+}
 
-                    double input_data_re, input_data_im;
-                    if (tmp_re > max_half_minus_one) {
-                      input_data_re = ((tmp_re-65536)/sc);
-                    } else {
-                      input_data_re = (tmp_re/sc);
-                    }
-                    //xn_input[line_no-5].re = input_data_re;
-                    //xn_re_hw[line_no-5] = dummy_re;
+FFT(1,16,xn_input);       
 
-                    if (tmp_im > max_half_minus_one) {
-                      input_data_im = ((tmp_im-65536)/sc);
-                    } else {
-                      input_data_im = (tmp_im/sc);
-                    }
-                    //xn_input[line_no-5].im = input_data_im;
-                    //xn_im_hw[line_no-5] = dummy_im;
+fftshift(xnf_output,xn_input,256,256,(256/2),(256/2));
 
-                    xn_input[line_no-5] = cmpxDataIn(input_data_re, input_data_im);
+for(int l = 0; l < 65536; l++)
+{
+	   cout << "Frame:" << " index: " << l
+                 << "  RE Output: " << xn_input[l].real() << endl;
+           cout << "Frame:" << " index: " << l
+                 << " vs. IM Output: " << xn_input[l].imag() << endl;
 
-                }
-                line_no++;
-            }
-        }
-        fclose(stimfile);
+}
 
-        bool ovflo;
+ifftshift(xnif_output,xnf_output,256,256,(-256/2),(-256/2));
 
-        fft_top(FWD_INV, xn_input, xk_output, &ovflo);
+FFT(-1,16,xnif_output);        
 
-        ovflo_all |= ovflo;
+	//**************************************************** Simulate the IFFT.*************************************************
 
-	    // Open golden results .res file for reading 
-        FILE* resfile;
-        sprintf(res_filename, "stimulus_%02d", frame);
-        strcat(res_filename,".res");
-        if ((resfile = fopen(res_filename, "r")) == 0)
-        {
-            printf("ERROR: Can't open %s\n", res_filename);
-            exit(888);
-        }
+//        fft_top(0, xk_output, xki_output, &ovflo);
+//
+//        ovflo_all |= ovflo;
+//
+//***********************************************************Normalize the values in between 0 and 255*********************************
 
-        int tmp;
-        fscanf(resfile, "%X", &tmp);
-        fscanf(resfile, "%X", &tmp);
-        for (int i = 0; i < (1<<NFFT); i++)
-        {
-            fscanf(resfile,"%x %x %f %f", &tmp_re, &tmp_im, &dummy_re, &dummy_im);
-            data_out_t golden = dummy_re;
-            //if (golden != xk_output[i].re)
-            if (golden != xk_output[i].real())
-            {
-                error_num++;
-                cout << "Frame:" << frame << " index: " << i 
-                     << "  Golden: " <<  golden.to_float() << " vs. RE Output: " << setprecision(14) << xk_output[i].real().to_float() << endl;
-            }
-            golden = dummy_im;
-            //if (golden != xk_output[i].im)
-            if (golden != xk_output[i].imag())
-            {
-                error_num++;
-                cout << "Frame:" << frame << " index: " << i 
-                     << "  Golden: " << golden.to_float() << " vs. IM Output: " << setprecision(14) << xk_output[i].imag().to_float() << endl;
-            }
-        }
-        fclose(resfile);
-    }
 
-    cout << " ERRORS: " << error_num << endl;
-    if (error_num > 0)
-        cout << " (FAILED!!!)" << endl;
-    else if (ovflo_all)   
-        cout << " (OVERFLOW!!!)" << endl;
-    else
-        cout << " (PASSED!!!)" << endl;
+       double minValue = log10f(sqrtf((xnif_output[0].real()* xnif_output[0].real()) + (xnif_output[0].imag()*xnif_output[0].imag())) + 1) ;
+       double maxValue = minValue;
+       CImg<double> imgOutput(256,256,1,1,0);
+//       imgOutput = (double *)malloc(65536*sizeof(double));
+       for (int j = 0; j < 65536; j++)
+        { 
+  		double tempValue = log10f(sqrtf((xnif_output[j].real()* xnif_output[j].real()) + (xnif_output[j].imag()*xnif_output[j].imag())) + 1);
+//                printf("%f\n",(sqrtf((xki_output[j].real()* xki_output[j].real()) + (xki_output[j].imag()*xki_output[j].imag())) + 1));
+                if(tempValue > maxValue){
+		maxValue = tempValue;}
+                if(tempValue < minValue){
+		minValue = tempValue;}
+                imgOutput[j] = tempValue;
+	}
 
-    if (error_num > 0)
-        return 1;
-    else
-        return 0;
+      for(int k = 0; k<65536;k++)
+	{
+		imgOutput[k] = ((imgOutput[k] - minValue)*(200/(maxValue-minValue)));
+//	        printf("%f\n%f\n\n",minValue,maxValue);  
+//              printf("%f\n",imgOutput[k]);
+	} 
+	imgOutput.save("/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_single/output.png");
+
+
 }

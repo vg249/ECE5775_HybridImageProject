@@ -133,3 +133,11 @@ void fft_top(
     cmpxDataIn in[FFT_LENGTH],
     cmpxDataOut out[FFT_LENGTH],
     bool* ovflo);
+
+
+void FFT(
+    int dir,
+    long m,
+    complex<double> x[]
+    );
+

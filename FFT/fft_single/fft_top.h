@@ -96,8 +96,8 @@ ALL TIMES.
 const char FFT_INPUT_WIDTH                     = 16;
 const char FFT_OUTPUT_WIDTH                    = FFT_INPUT_WIDTH;
 const char FFT_CONFIG_WIDTH                    = 16;
-const char FFT_NFFT_MAX                        = 10; 
-const int  FFT_LENGTH                          = 1 << FFT_NFFT_MAX; 
+const char FFT_NFFT_MAX                        = 3; 
+const int  FFT_LENGTH                          = 8; 
 
 
 #include <complex>
@@ -133,3 +133,7 @@ void fft_top(
     cmpxDataIn in[FFT_LENGTH],
     cmpxDataOut out[FFT_LENGTH],
     bool* ovflo);
+
+
+void FFT(int dir, long m, complex <double> x[]);
+

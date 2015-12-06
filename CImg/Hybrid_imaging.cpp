@@ -29,13 +29,13 @@ double dist;
   int i = 0;
 for (int u=0; u<imgwidth; u++)
     for (int v=0; v<imgheight; v++) {
-      dist = sqrt((double)(u-imgwidth/2)*(u-imgwidth/2)+(v-imgheight/2)*(v-imgheight/2));
+      dist = sqrt((double)(v-imgwidth/2)*(v-imgwidth/2)+(u-imgheight/2)*(u-imgheight/2));
       if (High == 1){
-      H[u][v] = 1 - exp(-((dist*dist)/(2*35*35)));}
+      H[v][u] = 1 - exp(-((dist*dist)/(2*35*35)));}
       else{
-      H[u][v] = exp(-((dist*dist)/(2*10*10)));}
-      B[i] = std::real(H[u][v]);
-      S[i] = std::imag(H[u][v]);
+      H[v][u] = exp(-((dist*dist)/(2*10*10)));}
+      B[i] = std::real(H[v][u]);
+      S[i] = std::imag(H[v][u]);
       i++; 
     }
 
@@ -52,8 +52,9 @@ return F;
 int main() {
  
   //Reading the image 
-//  const CImg<double> imglo = CImg<double>("marilyn1.png").resize(256,256).save("original.png");
-  const CImg<double> img = CImg<double>("einstein.png").resize(256,256).save("originallo.png");
+  const CImg<double> img = CImg<double>("marilyn1.png").resize(256,256).save("original.png");
+  const CImg<double> imglo = CImg<double>("einstein.png").resize(256,256).save("originallo.png");
+
 //
 //  //Applying fourier transform. Referenced it frm CImg.h. 
 //  //Returns list in 0 and 1 column. We assummed the values in 0 column are magnitude and 1 column are phase
@@ -61,10 +62,15 @@ int main() {
 //  CImgList<double> Flo = imglo.get_FFT();
 //
 //  //FFT Shift. Referenced from CImg.h
-//  cimglist_apply(F,shift)(img.width()/2,img.height()/2,0,0,2);
-//  cimglist_apply(Flo,shift)(imglo.width()/2,imglo.height()/2,0,0,2);
+  cimglist_apply(F,shift)(img.width()/2,img.height()/2,0,0,2);
+//  cimglist_apply(F,shift)(imglo.width()/2,imglo.height()/2,0,0,2);
 //
-//  F   = GaussFilter(img.width(), img.height(),F,1); 
+//   for(int b=0;b<(img.height()*img.width());b++)
+//   {
+//	printf("%f : %f\n",F[0][b],F[1][b]);
+//   }
+//
+//  F   = GaussFilter(img.width(), img.height(),F,0); 
 //  Flo = GaussFilter(imglo.width(), imglo.height(),Flo,0); 
 //
 //  cimglist_apply(F,shift)(-img.width()/2,-img.height()/2,0,0,2);
@@ -81,17 +87,14 @@ int main() {
 //        FT[1][b] = FT[1][b]+FTlo[1][b];
 //     }
 //
-  const CImg<double> mag   = ((FT[0].get_pow(2) + FT[1].get_pow(2)).sqrt() + 1);
+
+  const CImg<double> mag   = ((FT[0].get_pow(2) + FT[1].get_pow(2)).sqrt() + 1).log().normalize(0,255);
 //  const CImg<double> maglo = ((FTlo[0].get_pow(2) + FTlo[1].get_pow(2)).sqrt() + 1).log().normalize(0,255);
 
-   for(int b=0;b<(img.height()*img.width());b++)
-   {
-	printf("%f\n",F[b]);
-   }
 
  
 
-//  CImgList<double> visu(img,mag);
+  CImgList<double> visu(img,mag);
   mag.save("hybrid_image.png");
 //  maglo.save("fftimagelo.png");
 }

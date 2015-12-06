@@ -3,7 +3,7 @@
 # Associated Filename: run_hls.tcl
 # Purpose: Tcl commands to setup Vivado HLS tutorial example
 # Device: All 
-# Revision History: March 31, 2013 - initial release
+# Revision History: September 19, 2013 - initial release
 #                                                 
 # *******************************************************************************
 #-  (c) Copyright 2011-2014 Xilinx, Inc. All rights reserved.
@@ -91,51 +91,53 @@
 # Project settings
 open_project proj -reset
 
+set CFLAGS "-L/usr/X11R6/lib -lm -lpthread -lX11"
+
 # Add the file for synthsis
 add_files fft_top.cpp
 
 # Add testbench files for co-simulation
 add_files -tb fft_tb.cpp
-add_files -tb data/stimulus_00.dat
-add_files -tb data/stimulus_01.dat
-add_files -tb data/stimulus_02.dat
-add_files -tb data/stimulus_03.dat
-add_files -tb data/stimulus_04.dat
-add_files -tb data/stimulus_05.dat
-add_files -tb data/stimulus_06.dat
-add_files -tb data/stimulus_07.dat
-add_files -tb data/stimulus_08.dat
-add_files -tb data/stimulus_09.dat
-add_files -tb data/stimulus_10.dat
-add_files -tb data/stimulus_11.dat
-add_files -tb data/stimulus_12.dat
-add_files -tb data/stimulus_13.dat
-add_files -tb data/stimulus_14.dat
-add_files -tb data/stimulus_15.dat
-add_files -tb data/stimulus_16.dat
-add_files -tb data/stimulus_17.dat
-add_files -tb data/stimulus_18.dat
-add_files -tb data/stimulus_19.dat
-add_files -tb data/stimulus_00.res
-add_files -tb data/stimulus_01.res
-add_files -tb data/stimulus_02.res
-add_files -tb data/stimulus_03.res
-add_files -tb data/stimulus_04.res
-add_files -tb data/stimulus_05.res
-add_files -tb data/stimulus_06.res
-add_files -tb data/stimulus_07.res
-add_files -tb data/stimulus_08.res
-add_files -tb data/stimulus_09.res
-add_files -tb data/stimulus_10.res
-add_files -tb data/stimulus_11.res
-add_files -tb data/stimulus_12.res
-add_files -tb data/stimulus_13.res
-add_files -tb data/stimulus_14.res
-add_files -tb data/stimulus_15.res
-add_files -tb data/stimulus_16.res
-add_files -tb data/stimulus_17.res
-add_files -tb data/stimulus_18.res
-add_files -tb data/stimulus_19.res
+#add_files -tb data/stimulus_00.dat
+#add_files -tb data/stimulus_01.dat
+#add_files -tb data/stimulus_02.dat
+#add_files -tb data/stimulus_03.dat
+#add_files -tb data/stimulus_04.dat
+#add_files -tb data/stimulus_05.dat
+#add_files -tb data/stimulus_06.dat
+#add_files -tb data/stimulus_07.dat
+#add_files -tb data/stimulus_08.dat
+#add_files -tb data/stimulus_09.dat
+#add_files -tb data/stimulus_10.dat
+#add_files -tb data/stimulus_11.dat
+#add_files -tb data/stimulus_12.dat
+#add_files -tb data/stimulus_13.dat
+#add_files -tb data/stimulus_14.dat
+#add_files -tb data/stimulus_15.dat
+#add_files -tb data/stimulus_16.dat
+#add_files -tb data/stimulus_17.dat
+#add_files -tb data/stimulus_18.dat
+#add_files -tb data/stimulus_19.dat
+#add_files -tb data/stimulus_00.res
+#add_files -tb data/stimulus_01.res
+#add_files -tb data/stimulus_02.res
+#add_files -tb data/stimulus_03.res
+#add_files -tb data/stimulus_04.res
+#add_files -tb data/stimulus_05.res
+#add_files -tb data/stimulus_06.res
+#add_files -tb data/stimulus_07.res
+#add_files -tb data/stimulus_08.res
+#add_files -tb data/stimulus_09.res
+#add_files -tb data/stimulus_10.res
+#add_files -tb data/stimulus_11.res
+#add_files -tb data/stimulus_12.res
+#add_files -tb data/stimulus_13.res
+#add_files -tb data/stimulus_14.res
+#add_files -tb data/stimulus_15.res
+#add_files -tb data/stimulus_16.res
+#add_files -tb data/stimulus_17.res
+#add_files -tb data/stimulus_18.res
+#add_files -tb data/stimulus_19.res
 
 # Set top module of the design
 set_top fft_top
@@ -149,19 +151,20 @@ set_part  {xc7k160tfbg484-1}
 # Set the target clock period
 create_clock -period 3.3
 
-# Set to 0: to run setup
+# Run C simulation
+# Put your linker options for CImg here
+#csim_design -ldflags ""
+csim_design -ldflags "-lm -lpthread -L/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft -L/usr/X11R6/lib -lX11"
+
+# Set any optimization directives
+config_dataflow -default_channel fifo 
+# End of directives
+
 # Set to 1: to run setup and synthesis
 # Set to 2: to run setup, synthesis and RTL simulation
 # Set to 3: to run setup, synthesis, RTL simulation and RTL synthesis
 # Any other value will run setup only
 set hls_exec 1
-
-# Run C simulation
-csim_design
-
-# Set any optimization directives
-config_dataflow -default_channel fifo -fifo_depth 1
-# End of directives
 
 if {$hls_exec == 1} {
 	# Run Synthesis and Exit
@@ -178,7 +181,7 @@ if {$hls_exec == 1} {
 	
 	cosim_design -rtl verilog
 
-	export_design
+	export_design 
 } else {
 	# Default is to exit after setup
 	csynth_design

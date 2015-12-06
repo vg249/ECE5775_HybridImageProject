@@ -118,7 +118,7 @@ using namespace cimg_library;
 int main()
 {
     const int SIM_FRAMES = 20;
-    const int SAMPLES = (1 << 16);
+    const int SAMPLES = (1 << 3);
 
     int error_num = 0;
     bool ovflo_all = false;
@@ -135,29 +135,42 @@ int main()
         int FWD_INV = 1;
         int sc_sch = 863;
         int line_no = 1;
+        const double sc = ldexp(1.0, FFT_INPUT_WIDTH-1);
 
 //******************************Converting the pixels to Complex data as FFT function take Complex Input*********************************
 
-for(int m = 0; m < 65536 ;m++)
-{
-  double input_data_re;
-  input_data_re = img[m];
-  xn_input[m] = cmpxData(input_data_re, 0);
-	
-}
+//for(int m = 0; m < 65536 ;m++)
+//{
+//  double input_data_re;
+//  input_data_re = (img[m]/sc);
+//  xn_input[m] = cmpxData(input_data_re, 0);
+//	
+//}
+
 
 //
 
-//int k = 0;
+int m = 0;
 //
 //for(int i = 0; i < 256; i++)
 //{
 // for(int j=0; j < 256; j++)
 //   { 
-//      printf("%f\t%f\n",img(j,i,0,0),img[k]);
-//      k++;
+//     double input_data_re;
+//     input_data_re = (img(i,j,0,0)/sc);
+//     xn_input[m] = cmpxData(input_data_re, 0);
+//     m++;
 //   }
 //}
+     xn_input[0] = cmpxData((1/sc), 0);
+     xn_input[1] = cmpxData((1/sc), 0);
+     xn_input[2] = cmpxData((1/sc), 0);
+     xn_input[3] = cmpxData((1/sc), 0);
+     xn_input[4] = cmpxData(0, 0);
+     xn_input[5] = cmpxData(0, 0);
+     xn_input[6] = cmpxData(0, 0);
+     xn_input[7] = cmpxData(0, 0);
+
         //******************************************** Simulate the FFT. Forward FFT ******************************************
 
         bool ovflo;
@@ -166,46 +179,45 @@ for(int m = 0; m < 65536 ;m++)
 
         ovflo_all |= ovflo;
         
-//	for (int i = 0; i < 65536; i++)
-//        {
-//            cout << "Frame:" << " index: " << i 
-//                 << "  RE Output: " << setprecision(14) << xk_output[i].real() << endl;
-//           cout << "Frame:" << " index: " << i 
-//                 << " vs. IM Output: " << setprecision(14) << xk_output[i].imag() << endl;
-          
-//    }
+	for (int i = 0; i < 8; i++)
+        {
+            cout << "Frame:" << " index: " << i 
+                 << "  RE Output: " << xk_output[i].real() << endl;
+           cout << "Frame:" << " index: " << i 
+                 << " vs. IM Output: " << xk_output[i].imag() << endl;
+    }
 
 	//**************************************************** Simulate the IFFT.*************************************************
 
-        fft_top(0, xk_output, xki_output, &ovflo);
+//        fft_top(0, xk_output, xki_output, &ovflo);
+//
+//        ovflo_all |= ovflo;
+//
+////***********************************************************Normalize the values in between 0 and 255*********************************
+//
 
-        ovflo_all |= ovflo;
-
-//***********************************************************Normalize the values in between 0 and 255*********************************
-
-
-       double minValue = log10f(sqrtf((xki_output[0].real()* xki_output[0].real()) + (xki_output[0].imag()*xki_output[0].imag())) + 1) ;
-       double maxValue = minValue;
-       CImg<double> imgOutput(256,256,1,1,0);
-//       imgOutput = (double *)malloc(65536*sizeof(double));
-       for (int j = 0; j < 65536; j++)
-        { 
-  		double tempValue = log10f(sqrtf((xki_output[j].real()* xki_output[j].real()) + (xki_output[j].imag()*xki_output[j].imag())) + 1);
-                printf("%f\n",(sqrtf((xki_output[j].real()* xki_output[j].real()) + (xki_output[j].imag()*xki_output[j].imag())) + 1));
-                if(tempValue > maxValue){
-		maxValue = tempValue;}
-                if(tempValue < minValue){
-		minValue = tempValue;}
-                imgOutput[j] = tempValue;
-	}
-
-      for(int k = 0; k<65536;k++)
-	{
-		imgOutput[k] = ((imgOutput[k] - minValue)*(255/(maxValue-minValue)));
-//	        printf("%f\n%f\n\n",minValue,maxValue);  
-//                printf("%f\n",imgOutput[k]);
-	} 
-	imgOutput.save("/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/output.png");
-
+//       double minValue = log10f(sqrtf((xk_output[0].real()* xk_output[0].real()) + (xk_output[0].imag()*xk_output[0].imag())) + 1) ;
+//       double maxValue = minValue;
+//       CImg<double> imgOutput(256,256,1,1,0);
+////       imgOutput = (double *)malloc(65536*sizeof(double));
+//       for (int j = 0; j < 65536; j++)
+//        { 
+//  		double tempValue = log10f(sqrtf((xk_output[j].real()* xk_output[j].real()) + (xk_output[j].imag()*xk_output[j].imag())) + 1);
+//                printf("%f\n",(sqrtf((xk_output[j].real()* xk_output[j].real()) + (xk_output[j].imag()*xk_output[j].imag())) + 1));
+//                if(tempValue > maxValue){
+//		maxValue = tempValue;}
+//                if(tempValue < minValue){
+//		minValue = tempValue;}
+//                imgOutput[j] = tempValue;
+//	}
+//
+//      for(int k = 0; k<65536;k++)
+//	{
+//		imgOutput[k] = ((imgOutput[k] - minValue)*(255/(maxValue-minValue)));
+////	        printf("%f\n%f\n\n",minValue,maxValue);  
+////                printf("%f\n",imgOutput[k]);
+//	} 
+//	imgOutput.save("/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/output.png");
+//
 
 }
