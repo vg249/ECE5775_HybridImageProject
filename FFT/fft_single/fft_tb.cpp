@@ -134,8 +134,8 @@ int main()
 
 //Reading the images into double array using CImg Library
 
-    const CImg<double> imgLo = CImg<double>("/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_ifft/marilyn1.png").resize(256,256).save("/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_single/resize.png");
-    const CImg<double> imgHi = CImg<double>("/home/student/vg249/ECE5775_HybridImageProject/CImg/einstein.png").resize(256,256).save("/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_single/einstein.png");
+    const CImg<double> imgLo = CImg<double>("marilyn1.png").resize(256,256).save("resize.png");
+    const CImg<double> imgHi = CImg<double>("einstein.png").resize(256,256).save("einsteinresize.png");
 
 //Converting the image pixel values to complex numbers
 
@@ -162,6 +162,6 @@ imgOutput[k] = xn_output[k];
 
 }
 
-imgOutput.save("/home/student/vg249/ECE5775_HybridImageProject/FFT/fft_single/output.png");
+imgOutput.save("output.png");
 
 }
