@@ -116,24 +116,15 @@ typedef ap_fixed<FFT_OUTPUT_WIDTH,FFT_OUTPUT_WIDTH-FFT_INPUT_WIDTH+1> data_out_t
 typedef std::complex<data_in_t> cmpxDataIn;
 typedef std::complex<data_out_t> cmpxDataOut;
 
-void dummy_proc_fe(
-    bool direction,
-    config_t* config, 
-    cmpxDataIn in[FFT_LENGTH], 
-    cmpxDataIn out[FFT_LENGTH]);
-
-void dummy_proc_be(
-    status_t* status_in, 
-    bool* ovflo,
-    cmpxDataOut in[FFT_LENGTH], 
-    cmpxDataOut out[FFT_LENGTH]);
-
-void fft_top(
-    bool direction,
-    cmpxDataIn in[FFT_LENGTH],
-    cmpxDataOut out[FFT_LENGTH],
-    bool* ovflo);
-
 
 void FFT(int dir, long m, complex <double> x[]);
+
+void fftshift(complex<double> out[65536], complex<double> in[65536], int xdim, int ydim, int xshift, int yshift);
+
+void GaussFilter(int imgwidth, int imgheight, complex<double> F[65536], bool High);
+
+void normalize(complex<double> imgNormIn[65536], double imgNormOut[65536]);
+
+void fft_top(int intImgSize, complex<double> imgLo_input[65536], complex<double> imgHi_input[65536],  double imgOutput[65536]);
+
 

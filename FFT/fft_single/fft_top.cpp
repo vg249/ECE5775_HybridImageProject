@@ -91,56 +91,25 @@ ALL TIMES.
 
 
 #include "fft_top.h"
+//fft shift function
 
-void dummy_proc_fe(
-    bool direction,
-    config_t* config, 
-    cmpxDataIn in[FFT_LENGTH], 
-    cmpxDataIn out[FFT_LENGTH])
+void fftshift(complex<double> out[65536], complex<double> in[65536], int xdim, int ydim, int xshift, int yshift)
 {
-    int i; 
-    config->setDir(direction);
-    config->setSch(0x2AB);
-    for (i=0; i< FFT_LENGTH; i++)
-        out[i] = in[i];
-}
-
-void dummy_proc_be(
-    status_t* status_in, 
-    bool* ovflo,
-    cmpxDataOut in[FFT_LENGTH], 
-    cmpxDataOut out[FFT_LENGTH])
-{
-    int i; 
-    for (i=0; i< FFT_LENGTH; i++)
-        out[i] = in[i];
-    *ovflo = status_in->getOvflo() & 0x1;
+int ii = 0;
+int jj = 0;
+  for (int i =0; i < xdim; i++) {
+    ii = (i + xshift) % xdim;
+    for (int j = 0; j < ydim; j++) {
+      jj = (j + yshift) % ydim;
+      out[ii * ydim + jj] = in[i * ydim + j];
+    }
+  }
 }
 
 
-void fft_top(
-    bool direction,
-    complex<data_in_t> in[FFT_LENGTH],
-    complex<data_out_t> out[FFT_LENGTH],
-    bool* ovflo)
-{
-#pragma HLS interface ap_hs port=direction
-#pragma HLS interface ap_fifo depth=1 port=ovflo
-#pragma HLS interface ap_fifo depth=FFT_LENGTH port=in,out
-#pragma HLS data_pack variable=in
-#pragma HLS data_pack variable=out
-#pragma HLS dataflow
-    complex<data_in_t> xn[FFT_LENGTH];
-    complex<data_out_t> xk[FFT_LENGTH];
-    config_t fft_config;
-    status_t fft_status;
-   
-    dummy_proc_fe(direction, &fft_config, in, xn);
-    // FFT IP
-    hls::fft<config1>(xn, xk, &fft_status, &fft_config);
-    dummy_proc_be(&fft_status, ovflo, xk, out);
-}
-void FFT(int dir, long m, complex <double> x[])
+//FFT function 
+
+void FFT(int dir, long m, complex <double> x[65536])
 {
    long i, i1, i2,j, k, l, l1, l2, n;
    complex <double> tx, t1, u, c;
@@ -148,7 +117,6 @@ void FFT(int dir, long m, complex <double> x[])
    n = 1;
    for(i = 0; i < m; i++)
       n <<= 1;
-   /* Do the bit reversal */
    i2 = n >> 1;
    j = 0;
    for (i = 0; i < n-1 ; i++)
@@ -163,7 +131,6 @@ void FFT(int dir, long m, complex <double> x[])
       }
       j += k;
    }
-   /* Compute the FFT */
    c.real(-1.0);
    c.imag(0.0);
    l2 = 1;
@@ -190,11 +157,101 @@ void FFT(int dir, long m, complex <double> x[])
          c.imag(-c.imag());
       c.real(sqrt((1.0 + c.real()) / 2.0));
    }
-   /* Scaling for forward transform */
-//   if (dir == 1)
-//   {
-//      for (i = 0; i < n; i++)
-//         x[i] /= n;
-//   }
+   if (dir == 1)
+   {
+      for (i = 0; i < n; i++)
+         x[i] /= n;
+   }
 return;
+}
+
+//Gauss filter function
+
+void GaussFilter(int imgwidth, int imgheight, complex<double> F[65536], bool High)
+{
+double dist;
+  complex<double> H[256][256];   //Complex double array for saving Gaussian mask
+
+  double D0,D;
+  double B[65536];   //65536 is the total number pixels available in the image
+  double S[65536];  
+
+ //Calculating the gaussian mask. Magnitude and the Phase values are saved in seperate arrays.
+ //Referenced from Online source. The mask is for low pass filter.
+  int i = 0;	
+for (int u=0; u<imgwidth; u++)
+    for (int v=0; v<imgheight; v++) {
+      dist = sqrt((double)(v-imgwidth/2)*(v-imgwidth/2)+(u-imgheight/2)*(u-imgheight/2));
+      if (High == 1){
+      H[u][v] = 1 - exp(-((dist*dist)/(2*35*35)));}
+      else{
+      H[u][v] = exp(-((dist*dist)/(2*15*15)));}
+      
+      F[i] = F[i] * H[u][v];
+      i++; 
+    }
+
+} 
+
+//normalize the output values between 0 and 255
+
+void normalize(complex<double> imgNormIn[65536], double imgNormOut[65536])
+{
+
+   double minValue = logf(sqrtf((imgNormIn[0].real()* imgNormIn[0].real()) + (imgNormIn[0].imag()*imgNormIn[0].imag())) + 1) ;
+   
+   double maxValue = minValue;
+
+   double tempValue = 0;
+
+   for (int j = 0; j < 65536; j++)
+    { 
+    	tempValue = logf(sqrtf((imgNormIn[j].real()* imgNormIn[j].real()) + (imgNormIn[j].imag()*imgNormIn[j].imag())) + 1);
+            if(tempValue > maxValue){
+    	maxValue = tempValue;}
+            if(tempValue < minValue){
+    	minValue = tempValue;}
+            imgNormOut[j] = tempValue;
+    }
+
+   for(int k = 0; k<65536;k++)
+    {
+    	imgNormOut[k] = ((imgNormOut[k] - minValue)*(255/(maxValue-minValue)));
+    } 
+
+}
+
+
+void fft_top(int intImgSize, complex<double> imgLo_input[65536], complex<double> imgHi_input[65536],  double imgOutput[65536])
+{
+
+   complex<double> imgLo_FFTS_output[65536];
+   complex<double> imgLo_IFFTS_output[65536];
+   complex<double> imgHi_FFTS_output[65536];
+   complex<double> imgHi_IFFTS_output[65536];
+   
+   complex<double> hybrid_output[65536];
+
+   FFT(1, intImgSize, imgLo_input);
+   FFT(1, intImgSize, imgHi_input);
+   
+   fftshift(imgLo_FFTS_output,imgLo_input,256,256,(256/2),(256/2));
+   fftshift(imgHi_FFTS_output,imgHi_input,256,256,(256/2),(256/2));
+
+   GaussFilter(256,256,imgLo_FFTS_output,0);   
+   GaussFilter(256,256,imgHi_FFTS_output,1);   
+   
+   fftshift(imgLo_IFFTS_output,imgLo_FFTS_output,256,256,(256/2),(256/2));
+   fftshift(imgHi_IFFTS_output,imgHi_FFTS_output,256,256,(256/2),(256/2));
+
+   FFT(-1,intImgSize,imgLo_IFFTS_output);        
+   FFT(-1,intImgSize,imgHi_IFFTS_output);        
+
+   for(int k = 0; k<65536;k++)
+    {
+    	hybrid_output[k] = imgLo_IFFTS_output[k] + imgHi_IFFTS_output[k];
+    } 
+   
+   normalize(hybrid_output, imgOutput);
+   
 }
