@@ -4,6 +4,7 @@
 #include <sstream>
 #include "fft.h"
 #include <stdio.h>
+#include "timer.h"
 
 #include <fstream>
 #include <string>
@@ -26,6 +27,12 @@ using namespace cimg_library;
 
 int main()
 {
+
+  // HLS streams
+
+  hls::stream<bit32_t> hybrid_image_in1;
+  hls::stream<bit32_t> hybrid_image_in2;
+  hls::stream<bit32_t> hybrid_image_out;
 
   //double array declaration for Input Images
 
@@ -57,13 +64,40 @@ int main()
     xnHi_input[m] = complex<double>(input_data_re, 0);	
   }
 
-  //hybrid image function
+//  timer.start();
 
-  hybrid_image(16,xnLo_input,xnHi_input,xn_output);
+  //--------------------------------------------------------------------
+  // Send data input images
+  //--------------------------------------------------------------------
+
+  for (int i = 0; i < 65536 ; i++ )
+  {
+     
+    hybrid_image_in1.write(imgLo[i]);
+    hybrid_image_in2.write(imgHi[i]);
+
+  }
+
+  //--------------------------------------------------------------------
+  // Execute the hybrid image
+  //--------------------------------------------------------------------
+
+  dut (hybrid_image_in1,hybrid_image_in2,hybrid_image_out);
+
+  //--------------------------------------------------------------------
+  // Receive the hybrid image matrix
+  //--------------------------------------------------------------------
+
+  for (int i = 0; i < 65536 ; i++ )
+  {
+    xn_output[i] = hybrid_image_out.read();
+  }
+
+//  timer.stop();
 
   //saving the output values as hybrid image
 
-  for(int k =0; k<65536;k++)
+  for(int k = 0; k <65536 ;k++)
   {
     imgOutput[k] = xn_output[k];
   }

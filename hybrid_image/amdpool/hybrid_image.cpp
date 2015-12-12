@@ -21,38 +21,57 @@ typedef ap_uint<32> bit32_t;
 // Top function
 //----------------------------------------------------------
 
-//void dut(
-//    hls::stream<bit32_t> &strm_in,
-//    hls::stream<bit32_t> &strm_out
-//)
-//{
+void dut(
+    hls::stream<bit32_t> &strm_in1,
+    hls::stream<bit32_t> &strm_in2,
+    hls::stream<bit32_t> &strm_out
+)
+{
   // Declare the input and output variables
-//  double  in1[256][256];
-//  double  in2[256][256];
-//  double  out[256][256];
-//
-//  // ------------------------------------------------------
-//  // Input processing
-//  // ------------------------------------------------------
-//  // Read the two input 32-bit words
-//  bit32_t input1 = strm_in.read();
-//  bit32_t input2 = strm_in.read();
-//
-//  // Convert input raw bits to fixed-point representation via bit slicing
-//  in(31, 0)             = input1;
-//  in(63,32)             = input2;
-//
-//  // ------------------------------------------------------
-//  // Call Hybrid Imaging
-//  // ------------------------------------------------------
-//  out = hybrid_image( in1, in2 );
-//
-//  // ------------------------------------------------------
-//  // Output processing
-//  // ------------------------------------------------------
-//  // Write out the computed digit value
-//  strm_out.write( out );
-//}
+  double in1[65536];
+  double in2[65536];
+  double out[65536];
+  complex<double> complex_In1[65536];
+  complex<double> complex_In2[65536];
+  double input_data_re = 0;
+
+  // ------------------------------------------------------
+  // Input processing
+  // ------------------------------------------------------
+  // Read the two input 32-bit words
+  bit32_t input1;
+  bit32_t input2; 
+
+  for(int i = 0; i < 65536 ;i++) 
+  {
+    input1 = strm_in1.read();
+    input2 = strm_in2.read();
+    in1[i] = input1;
+    in2[i] = input2;
+  }
+
+  for(int m = 0; m < 65536 ;m++)
+  {
+    input_data_re = in1[m];
+    complex_In2[m] = complex<double>(input_data_re, 0);
+    input_data_re = in2[m];
+    complex_In2[m] = complex<double>(input_data_re, 0);
+  }
+ 
+  // ------------------------------------------------------
+  // Call Hybrid Imaging
+  // ------------------------------------------------------
+  hybrid_image(16, complex_In1, complex_In2, out );
+
+  // ------------------------------------------------------
+  // Output processing
+  // ------------------------------------------------------
+  // Write out the computed digit value
+  for(int i = 0; i < 65536 ;i++)  
+  {
+    strm_out.write( out[i] );
+  }
+}
 
 //----------------------------------------------------------
 // FFT/IFFT shift function

@@ -2,8 +2,12 @@
 #include "ap_fixed.h"
 #include "hls_fft.h"
 #include <complex>
+#include "ap_int.h"
+#include<hls_stream.h>
 
-// configurable params^M
+typedef ap_uint<32> bit32_t;
+
+// configurable params
 const char FFT_INPUT_WIDTH                     = 16;
 const char FFT_OUTPUT_WIDTH                    = FFT_INPUT_WIDTH;
 const char FFT_CONFIG_WIDTH                    = 16;
@@ -25,6 +29,12 @@ struct config1 : hls::ip_fft::params_t {
 
 typedef hls::ip_fft::config_t<config1> config_t;
 typedef hls::ip_fft::status_t<config1> status_t;
+
+void dut(
+    hls::stream<bit32_t> &strm_in1,
+    hls::stream<bit32_t> &strm_in2,
+    hls::stream<bit32_t> &strm_out
+);
 
 void FFT(int dir, long m, complex <double> x[]);
 
