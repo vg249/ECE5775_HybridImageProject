@@ -6,6 +6,7 @@
 #include<hls_stream.h>
 
 typedef ap_uint<32> bit32_t;
+typedef ap_uint<64> bit64_t;
 
 // configurable params
 const char FFT_INPUT_WIDTH                     = 16;

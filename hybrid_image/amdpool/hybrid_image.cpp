@@ -28,32 +28,38 @@ void dut(
 )
 {
   // Declare the input and output variables
-  double in1[65536];
-  double in2[65536];
+  bit64_t in1[65536];
+  bit64_t in2[65536];
   double out[65536];
   complex<double> complex_In1[65536];
   complex<double> complex_In2[65536];
   double input_data_re = 0;
 
-  // ------------------------------------------------------
+  //-------------------------------------------------------
   // Input processing
-  // ------------------------------------------------------
+  //-------------------------------------------------------
   // Read the two input 32-bit words
-  bit32_t input1;
-  bit32_t input2; 
+  bit32_t input1_lo;
+  bit32_t input2_lo;
+  bit32_t input1_hi;
+  bit32_t input2_hi;
 
   for(int i = 0; i < 65536 ;i++) 
   {
-    input1 = strm_in1.read();
-    input2 = strm_in2.read();
-    in1[i] = input1;
-    in2[i] = input2;
+    input1_lo = strm_in1.read();
+    input1_hi = strm_in1.read();
+    input2_lo = strm_in2.read();
+    input2_hi = strm_in2.read();
+    in1[i](31, 0) = input1_lo;
+    in1[i](63,32) = input1_hi;
+    in2[i](31, 0) = input2_lo;
+    in2[i](63,32) = input2_hi;
   }
 
   for(int m = 0; m < 65536 ;m++)
   {
     input_data_re = in1[m];
-    complex_In2[m] = complex<double>(input_data_re, 0);
+    complex_In1[m] = complex<double>(input_data_re, 0);
     input_data_re = in2[m];
     complex_In2[m] = complex<double>(input_data_re, 0);
   }

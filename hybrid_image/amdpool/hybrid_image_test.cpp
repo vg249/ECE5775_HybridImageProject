@@ -70,11 +70,21 @@ int main()
   // Send data input images
   //--------------------------------------------------------------------
 
+  bit64_t img1[65536];
+  bit64_t img2[65536];
+
   for (int i = 0; i < 65536 ; i++ )
   {
-     
-    hybrid_image_in1.write(imgLo[i]);
-    hybrid_image_in2.write(imgHi[i]);
+    img1[i] = imgLo[i];
+    bit32_t input1_lo = img1[i].range(31,0);
+    bit32_t input1_hi = img1[i].range(63,32); 
+    bit32_t input2_lo = img2[i].range(31,0);
+    bit32_t input2_hi = img2[i].range(63,32);
+
+    hybrid_image_in1.write(input1_lo);
+    hybrid_image_in1.write(input1_hi);
+    hybrid_image_in2.write(input2_lo);
+    hybrid_image_in2.write(input2_hi);
 
   }
 
