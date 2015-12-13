@@ -25,11 +25,11 @@ void dut( hls::stream<bit32_t> &strm_in, hls::stream<bit32_t> &strm_out);
 
 void FFT(int dir, long m, complex <double> x[]);
 
-void fftshift(complex<double> out[65536], complex<double> in[65536], int xdim, int ydim, int xshift, int yshift);
+void fftshift(complex<double> out[4096], complex<double> in[4096], int xdim, int ydim, int xshift, int yshift);
 
-void GaussFilter(int imgwidth, int imgheight, complex<double> F[65536], bool High);
+void GaussFilter(int imgwidth, int imgheight, complex<double> F[4096], bool High);
 
-void normalize(complex<double> imgNormIn[65536], double imgNormOut[65536]);
+void normalize(complex<double> imgNormIn[4096], double imgNormOut[4096]);
 
-void hybrid_image(int intImgSize, complex<double> imgLo_input[65536], complex<double> imgHi_input[65536],  double imgOutput[65536]);
+void hybrid_image(int intImgSize, complex<double> imgLo_input[4096], complex<double> imgHi_input[4096],  double imgOutput[4096]);
 

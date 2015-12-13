@@ -35,21 +35,21 @@ int main()
 
   //double array declaration for Input Images
 
-  complex<double> xnLo_input[65536];
-  complex<double> xnHi_input[65536];
+  complex<double> xnLo_input[4096];
+  complex<double> xnHi_input[4096];
 
   //double arrat declaration for output images
 
-  double xn_output[65536];
+  double xn_output[4096];
 
   //Image Output
     
-  CImg<double> imgOutput(256,256,1,1,0);
+  CImg<double> imgOutput(64,64,1,1,0);
 
   //Reading the images into double array using CImg Library
 
-  const CImg<double> imgLo = CImg<double>("marilyn1.png").resize(256,256).save("resize.png");
-  const CImg<double> imgHi = CImg<double>("einstein.png").resize(256,256).save("einsteinresize.png");
+  const CImg<double> imgLo = CImg<double>("marilyn1.png").resize(64,64).save("resize.png");
+  const CImg<double> imgHi = CImg<double>("einstein.png").resize(64,64).save("einsteinresize.png");
 
   //Converting the image pixel values to complex numbers
 
@@ -62,10 +62,10 @@ int main()
   // Send data input images
   //--------------------------------------------------------------------
 
-  bit64_t img1[65536];
-  bit64_t img2[65536];
+  bit64_t img1[4096];
+  bit64_t img2[4096];
 
-  for (int i = 0; i < 65536 ; i++ )
+  for (int i = 0; i < 4096 ; i++ )
   {
     img1[i] = imgLo[i];
     img2[i] = imgHi[i];
@@ -91,7 +91,7 @@ int main()
   // Receive the hybrid image matrix
   //--------------------------------------------------------------------
 bit64_t hybrid_out;
-  for (int i = 0; i < 65536 ; i++ )
+  for (int i = 0; i < 4096 ; i++ )
   {
     hybrid_out.range(31,0) = hybrid_image_out.read();
     hybrid_out.range(63,32) = hybrid_image_out.read();
@@ -102,7 +102,7 @@ bit64_t hybrid_out;
 
   //saving the output values as hybrid image
 
-  for(int k = 0; k <65536 ;k++)
+  for(int k = 0; k <4096 ;k++)
   {
     imgOutput[k] = xn_output[k];
 //    printf("%f\n",xn_output[k]);
