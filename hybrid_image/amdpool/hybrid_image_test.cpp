@@ -1,12 +1,6 @@
-#include <iostream>
-#include <cstdlib>
-#include <cstring>
-#include <sstream>
 #include "hybrid_image.h"
-#include <stdio.h>
 #include "timer.h"
 
-#include <fstream>
 #include <string>
 #include <sstream>
 

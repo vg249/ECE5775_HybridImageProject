@@ -38,7 +38,7 @@ void dut(
   // Read the two input 32-bit words
   bit32_t input1_lo;
   bit32_t input2_hi;
-  bit32_t output;
+//  bit32_t output;
  
   for(int i = 0; i < 4096 ;i++) 
   {
@@ -72,8 +72,8 @@ void dut(
   for(int i = 0; i < 4096 ;i++)  
   { 
 //    printf("%f\n",out[i]);
-    output = out[i];
-    strm_out.write( output);
+//    output = out[i];
+    strm_out.write( out[i]);
   }
 }
 
@@ -102,8 +102,8 @@ int jj = 0;
 
 void FFT(int dir, long m, complex <float> x[4096])
 {
-   long i, i1, i2,j, k, l, l1, l2, n;
-   complex <float> tx, t1, u, c;
+   int i, i1, i2,j, k, l, l1, l2, n;
+   complex <float> tx, t1, u, c, temp;
 
    // Calculate the number of points
 
@@ -114,8 +114,12 @@ void FFT(int dir, long m, complex <float> x[4096])
    j = 0;
    for (i = 0; i < n-1 ; i++)
    {
-      if (i < j)
-         swap(x[i], x[j]);
+      if (i < j) {
+//         swap(x[i], x[j]);
+        temp = x[i];
+        x[i] = x[j];
+        x[j] = temp;
+      }   
       k = i2;
       while (k <= j)
           {
@@ -171,9 +175,9 @@ void GaussFilter(int imgwidth, int imgheight, complex<float> F[4096], bool High)
   float dist;
   complex<float> H[64][64];   //Complex float array for saving Gaussian mask
 
-  float D0,D;
-  float B[4096];   //4096 is the total number pixels available in the image
-  float S[4096];
+//  float D0,D;
+//  float B[4096];   //4096 is the total number pixels available in the image
+//  float S[4096];
 
  //Calculating the gaussian mask. Magnitude and the Phase values are saved in seperate arrays.
  //Referenced from Online source. The mask is for low pass filter.
@@ -196,29 +200,29 @@ void GaussFilter(int imgwidth, int imgheight, complex<float> F[4096], bool High)
 //----------------------------------------------------------
 //normalize the output values between 0 and 255
 
-void normalize(complex<float> imgNormIn[4096], float imgNormOut[4096])
-{
-
-   float minValue = logf(sqrtf((imgNormIn[0].real()* imgNormIn[0].real()) + (imgNormIn[0].imag()*imgNormIn[0].imag())) + 1) ;
-   float maxValue = minValue;
-   float tempValue = 0;
-
-   for (int j = 0; j < 4096; j++)
-    {
-        tempValue = logf(sqrtf((imgNormIn[j].real()* imgNormIn[j].real()) + (imgNormIn[j].imag()*imgNormIn[j].imag())) + 1);
-            if(tempValue > maxValue){
-        maxValue = tempValue;}
-            if(tempValue < minValue){
-        minValue = tempValue;}
-            imgNormOut[j] = tempValue;
-    }
-
-   for(int k = 0; k<4096;k++)
-    {
-        imgNormOut[k] = ((imgNormOut[k] - minValue)*(255/(maxValue-minValue)));
-    }
-
-}
+//void normalize(complex<float> imgNormIn[4096], float imgNormOut[4096])
+//{
+//
+//   float minValue = logf(sqrtf((imgNormIn[0].real()* imgNormIn[0].real()) + (imgNormIn[0].imag()*imgNormIn[0].imag())) + 1) ;
+//   float maxValue = minValue;
+//   float tempValue = 0;
+//
+//   for (int j = 0; j < 4096; j++)
+//    {
+//        tempValue = logf(sqrtf((imgNormIn[j].real()* imgNormIn[j].real()) + (imgNormIn[j].imag()*imgNormIn[j].imag())) + 1);
+//            if(tempValue > maxValue){
+//        maxValue = tempValue;}
+//            if(tempValue < minValue){
+//        minValue = tempValue;}
+//            imgNormOut[j] = tempValue;
+//    }
+//
+//   for(int k = 0; k<4096;k++)
+//    {
+//        imgNormOut[k] = ((imgNormOut[k] - minValue)*(255/(maxValue-minValue)));
+//    }
+//
+//}
 
 //----------------------------------------------------------
 // hybrid imaging
@@ -259,7 +263,7 @@ void hybrid_image(int intImgSize, complex<float> imgLo_input[4096], complex<floa
         hybrid_output[k] = hybrid_output[k] + img_IFFTS_output[k];
     }
 
-   normalize(hybrid_output, imgOutput);
+//   normalize(hybrid_output, imgOutput);
 
 }
 
