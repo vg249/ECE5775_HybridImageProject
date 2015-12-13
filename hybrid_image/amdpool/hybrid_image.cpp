@@ -27,42 +27,36 @@ void dut(
 )
 {
   // Declare the input and output variables
-  bit64_t in1;
-  bit64_t in2;
-  double out[4096];
-  complex<double> complex_In1[4096];
-  complex<double> complex_In2[4096];
-  double input_data_re = 0;
+  float out[4096];
+  complex<float> complex_In1[4096];
+  complex<float> complex_In2[4096];
+  float input_data_re = 0;
 
   //-------------------------------------------------------
   // Input processing
   //-------------------------------------------------------
   // Read the two input 32-bit words
   bit32_t input1_lo;
-  bit32_t input2_lo;
-  bit32_t input1_hi;
   bit32_t input2_hi;
-  bit64_t output;
+  bit32_t output;
  
   for(int i = 0; i < 4096 ;i++) 
   {
-    in1.range(31, 0) = strm_in.read();
-    in1.range(63,32) = strm_in.read();
-    in2.range(31, 0) = strm_in.read();
-    in2.range(63,32) = strm_in.read();
-    input_data_re = in1;
-    complex_In1[i] = complex<double>(input_data_re, 0);
-    input_data_re = in2;
-    complex_In2[i] = complex<double>(input_data_re, 0);
+    input1_lo = strm_in.read();
+    input2_hi = strm_in.read();
+    input_data_re = input1_lo;
+    complex_In1[i] = complex<float>(input_data_re, 0);
+    input_data_re = input2_hi;
+    complex_In2[i] = complex<float>(input_data_re, 0);
 
   }
 
 //  for(int m = 0; m < 4096 ;m++)
 //  {
 ////    input_data_re = in1[m];
-//    complex_In1[m] = complex<double>(80, 0);
+//    complex_In1[m] = complex<float>(80, 0);
 ////    input_data_re = in2[m];
-//    complex_In2[m] = complex<double>(80, 0);
+//    complex_In2[m] = complex<float>(80, 0);
 //  }
  
   // ------------------------------------------------------
@@ -79,8 +73,7 @@ void dut(
   { 
 //    printf("%f\n",out[i]);
     output = out[i];
-    strm_out.write( output.range(31,0));
-    strm_out.write( output.range(63,32));
+    strm_out.write( output);
   }
 }
 
@@ -89,7 +82,7 @@ void dut(
 //----------------------------------------------------------
 //fft shift function
 
-void fftshift(complex<double> out[4096], complex<double> in[4096], int xdim, int ydim, int xshift, int yshift)
+void fftshift(complex<float> out[4096], complex<float> in[4096], int xdim, int ydim, int xshift, int yshift)
 {
 int ii = 0;
 int jj = 0;
@@ -107,10 +100,10 @@ int jj = 0;
 //----------------------------------------------------------
 //FFT function
 
-void FFT(int dir, long m, complex <double> x[4096])
+void FFT(int dir, long m, complex <float> x[4096])
 {
    long i, i1, i2,j, k, l, l1, l2, n;
-   complex <double> tx, t1, u, c;
+   complex <float> tx, t1, u, c;
 
    // Calculate the number of points
 
@@ -173,14 +166,14 @@ return;
 // @param[in] : input - width and height of an image, high/low 
 // @return : the filtered matrix
 
-void GaussFilter(int imgwidth, int imgheight, complex<double> F[4096], bool High)
+void GaussFilter(int imgwidth, int imgheight, complex<float> F[4096], bool High)
 {
-  double dist;
-  complex<double> H[64][64];   //Complex double array for saving Gaussian mask
+  float dist;
+  complex<float> H[64][64];   //Complex float array for saving Gaussian mask
 
-  double D0,D;
-  double B[4096];   //4096 is the total number pixels available in the image
-  double S[4096];
+  float D0,D;
+  float B[4096];   //4096 is the total number pixels available in the image
+  float S[4096];
 
  //Calculating the gaussian mask. Magnitude and the Phase values are saved in seperate arrays.
  //Referenced from Online source. The mask is for low pass filter.
@@ -188,7 +181,7 @@ void GaussFilter(int imgwidth, int imgheight, complex<double> F[4096], bool High
   int i = 0;
   for (int u=0; u<imgwidth; u++)
     for (int v=0; v<imgheight; v++) {
-      dist = sqrt((double)(v-imgwidth/2)*(v-imgwidth/2)+(u-imgheight/2)*(u-imgheight/2));
+      dist = sqrt((float)(v-imgwidth/2)*(v-imgwidth/2)+(u-imgheight/2)*(u-imgheight/2));
       if (High == 1){
       H[u][v] = 1 - exp(-((dist*dist)/(2*35*35)));}
       else{
@@ -203,12 +196,12 @@ void GaussFilter(int imgwidth, int imgheight, complex<double> F[4096], bool High
 //----------------------------------------------------------
 //normalize the output values between 0 and 255
 
-void normalize(complex<double> imgNormIn[4096], double imgNormOut[4096])
+void normalize(complex<float> imgNormIn[4096], float imgNormOut[4096])
 {
 
-   double minValue = logf(sqrtf((imgNormIn[0].real()* imgNormIn[0].real()) + (imgNormIn[0].imag()*imgNormIn[0].imag())) + 1) ;
-   double maxValue = minValue;
-   double tempValue = 0;
+   float minValue = logf(sqrtf((imgNormIn[0].real()* imgNormIn[0].real()) + (imgNormIn[0].imag()*imgNormIn[0].imag())) + 1) ;
+   float maxValue = minValue;
+   float tempValue = 0;
 
    for (int j = 0; j < 4096; j++)
     {
@@ -233,13 +226,13 @@ void normalize(complex<double> imgNormIn[4096], double imgNormOut[4096])
 // @param[in] : input - 2 images
 // @return : the hybrid image
 
-void hybrid_image(int intImgSize, complex<double> imgLo_input[4096], complex<double> imgHi_input[4096],  double imgOutput[4096])
+void hybrid_image(int intImgSize, complex<float> imgLo_input[4096], complex<float> imgHi_input[4096],  float imgOutput[4096])
 {
 
-   complex<double> img_FFTS_output[4096];
-   complex<double> img_IFFTS_output[4096];
+   complex<float> img_FFTS_output[4096];
+   complex<float> img_IFFTS_output[4096];
 
-   complex<double> hybrid_output[4096];
+   complex<float> hybrid_output[4096];
 
    FFT(1, intImgSize, imgLo_input);
 
