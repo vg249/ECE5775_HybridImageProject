@@ -9,16 +9,6 @@ typedef ap_uint<32> bit32_t;
 typedef ap_uint<64> bit64_t;
 
 // configurable params
-const char FFT_INPUT_WIDTH                     = 16;
-const char FFT_OUTPUT_WIDTH                    = FFT_INPUT_WIDTH;
-const char FFT_CONFIG_WIDTH                    = 16;
-const char FFT_NFFT_MAX                        = 3; 
-const int  FFT_LENGTH                          = 8; 
-
-typedef ap_fixed<FFT_INPUT_WIDTH,1> data_in_t;
-typedef ap_fixed<FFT_OUTPUT_WIDTH,FFT_OUTPUT_WIDTH-FFT_INPUT_WIDTH+1> data_out_t;
-typedef std::complex<data_in_t> cmpxDataIn;
-typedef std::complex<data_out_t> cmpxDataOut;
 
 using namespace std;
 
@@ -31,7 +21,7 @@ using namespace std;
 //typedef hls::ip_fft::config_t<config1> config_t;
 //typedef hls::ip_fft::status_t<config1> status_t;
 
-void dut( hls::stream<bit32_t> &strm_in1, hls::stream<bit32_t> &strm_in2, hls::stream<bit32_t> &strm_out);
+void dut( hls::stream<bit32_t> &strm_in, hls::stream<bit32_t> &strm_out);
 
 void FFT(int dir, long m, complex <double> x[]);
 

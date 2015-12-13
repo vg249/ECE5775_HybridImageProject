@@ -31,7 +31,6 @@ int main()
   // HLS streams
 
   hls::stream<bit32_t> hybrid_image_in1;
-  hls::stream<bit32_t> hybrid_image_in2;
   hls::stream<bit32_t> hybrid_image_out;
 
   //double array declaration for Input Images
@@ -56,14 +55,6 @@ int main()
 
   double input_data_re = 0;
 
-  for(int m = 0; m < 65536 ;m++)
-  {
-    input_data_re = imgLo[m];
-    xnLo_input[m] = complex<double>(input_data_re, 0);
-//    printf("%f\n",input_data_re);
-    input_data_re = imgHi[m];
-    xnHi_input[m] = complex<double>(input_data_re, 0);	
-  }
 
 //  timer.start();
 
@@ -85,8 +76,8 @@ int main()
 
     hybrid_image_in1.write(input1_lo);
     hybrid_image_in1.write(input1_hi);
-    hybrid_image_in2.write(input2_lo);
-    hybrid_image_in2.write(input2_hi);
+    hybrid_image_in1.write(input2_lo);
+    hybrid_image_in1.write(input2_hi);
 
   }
 
@@ -94,7 +85,7 @@ int main()
   // Execute the hybrid image
   //--------------------------------------------------------------------
 
-  dut (hybrid_image_in1,hybrid_image_in2,hybrid_image_out);
+  dut (hybrid_image_in1,hybrid_image_out);
 
   //--------------------------------------------------------------------
   // Receive the hybrid image matrix

@@ -22,8 +22,7 @@ typedef ap_uint<32> bit32_t;
 //----------------------------------------------------------
 
 void dut(
-    hls::stream<bit32_t> &strm_in1,
-    hls::stream<bit32_t> &strm_in2,
+    hls::stream<bit32_t> &strm_in,
     hls::stream<bit32_t> &strm_out
 )
 {
@@ -47,10 +46,10 @@ void dut(
  
   for(int i = 0; i < 65536 ;i++) 
   {
-    in1.range(31, 0) = strm_in1.read();
-    in1.range(63,32) = strm_in1.read();
-    in2.range(31, 0) = strm_in2.read();
-    in2.range(63,32) = strm_in2.read();
+    in1.range(31, 0) = strm_in.read();
+    in1.range(63,32) = strm_in.read();
+    in2.range(31, 0) = strm_in.read();
+    in2.range(63,32) = strm_in.read();
     input_data_re = in1;
     complex_In1[i] = complex<double>(input_data_re, 0);
     input_data_re = in2;
