@@ -146,6 +146,7 @@ for(int m = 0; m < 65536 ;m++)
   input_data_re = imgLo[m];
   xnLo_input[m] = complex<double>(input_data_re, 0);
   input_data_re = imgHi[m];
+  printf("%f\n",input_data_re);
   xnHi_input[m] = complex<double>(input_data_re, 0);
 	
 }
@@ -157,9 +158,8 @@ fft_top(16,xnLo_input,xnHi_input,xn_output);
 //saving the output values as hybrid image
 
 for(int k =0; k<65536;k++){
-
 imgOutput[k] = xn_output[k];
-
+//printf("%f\n",xn_output[k]);
 }
 
 imgOutput.save("output.png");

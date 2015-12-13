@@ -60,6 +60,7 @@ int main()
   {
     input_data_re = imgLo[m];
     xnLo_input[m] = complex<double>(input_data_re, 0);
+//    printf("%f\n",input_data_re);
     input_data_re = imgHi[m];
     xnHi_input[m] = complex<double>(input_data_re, 0);	
   }
@@ -76,6 +77,7 @@ int main()
   for (int i = 0; i < 65536 ; i++ )
   {
     img1[i] = imgLo[i];
+    img2[i] = imgHi[i];
     bit32_t input1_lo = img1[i].range(31,0);
     bit32_t input1_hi = img1[i].range(63,32); 
     bit32_t input2_lo = img2[i].range(31,0);
@@ -97,10 +99,12 @@ int main()
   //--------------------------------------------------------------------
   // Receive the hybrid image matrix
   //--------------------------------------------------------------------
-
+bit64_t hybrid_out;
   for (int i = 0; i < 65536 ; i++ )
   {
-    xn_output[i] = hybrid_image_out.read();
+    hybrid_out.range(31,0) = hybrid_image_out.read();
+    hybrid_out.range(63,32) = hybrid_image_out.read();
+    xn_output[i] = hybrid_out;
   }
 
 //  timer.stop();
@@ -110,6 +114,7 @@ int main()
   for(int k = 0; k <65536 ;k++)
   {
     imgOutput[k] = xn_output[k];
+//    printf("%f\n",xn_output[k]);
   }
 
   imgOutput.save("output.png");

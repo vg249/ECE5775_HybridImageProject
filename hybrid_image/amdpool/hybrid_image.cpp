@@ -28,8 +28,8 @@ void dut(
 )
 {
   // Declare the input and output variables
-  bit64_t in1[65536];
-  bit64_t in2[65536];
+  bit64_t in1;
+  bit64_t in2;
   double out[65536];
   complex<double> complex_In1[65536];
   complex<double> complex_In2[65536];
@@ -43,26 +43,28 @@ void dut(
   bit32_t input2_lo;
   bit32_t input1_hi;
   bit32_t input2_hi;
-
+  bit64_t output;
+ 
   for(int i = 0; i < 65536 ;i++) 
   {
-    input1_lo = strm_in1.read();
-    input1_hi = strm_in1.read();
-    input2_lo = strm_in2.read();
-    input2_hi = strm_in2.read();
-    in1[i](31, 0) = input1_lo;
-    in1[i](63,32) = input1_hi;
-    in2[i](31, 0) = input2_lo;
-    in2[i](63,32) = input2_hi;
+    in1.range(31, 0) = strm_in1.read();
+    in1.range(63,32) = strm_in1.read();
+    in2.range(31, 0) = strm_in2.read();
+    in2.range(63,32) = strm_in2.read();
+    input_data_re = in1;
+    complex_In1[i] = complex<double>(input_data_re, 0);
+    input_data_re = in2;
+    complex_In2[i] = complex<double>(input_data_re, 0);
+
   }
 
-  for(int m = 0; m < 65536 ;m++)
-  {
-    input_data_re = in1[m];
-    complex_In1[m] = complex<double>(input_data_re, 0);
-    input_data_re = in2[m];
-    complex_In2[m] = complex<double>(input_data_re, 0);
-  }
+//  for(int m = 0; m < 65536 ;m++)
+//  {
+////    input_data_re = in1[m];
+//    complex_In1[m] = complex<double>(80, 0);
+////    input_data_re = in2[m];
+//    complex_In2[m] = complex<double>(80, 0);
+//  }
  
   // ------------------------------------------------------
   // Call Hybrid Imaging
@@ -73,9 +75,13 @@ void dut(
   // Output processing
   // ------------------------------------------------------
   // Write out the computed digit value
+
   for(int i = 0; i < 65536 ;i++)  
-  {
-    strm_out.write( out[i] );
+  { 
+//    printf("%f\n",out[i]);
+    output = out[i];
+    strm_out.write( output.range(31,0));
+    strm_out.write( output.range(63,32));
   }
 }
 
@@ -231,42 +237,34 @@ void normalize(complex<double> imgNormIn[65536], double imgNormOut[65536])
 void hybrid_image(int intImgSize, complex<double> imgLo_input[65536], complex<double> imgHi_input[65536],  double imgOutput[65536])
 {
 
-   complex<double> imgLo_FFTS_output[65536];
-   complex<double> imgLo_IFFTS_output[65536];
-   complex<double> imgHi_FFTS_output[65536];
-   complex<double> imgHi_IFFTS_output[65536];
+   complex<double> img_FFTS_output[65536];
+   complex<double> img_IFFTS_output[65536];
+
    complex<double> hybrid_output[65536];
 
-   // FFT
-
    FFT(1, intImgSize, imgLo_input);
-   FFT(1, intImgSize, imgHi_input);
 
-   // FFT shift
+   fftshift(img_FFTS_output,imgLo_input,256,256,(256/2),(256/2));
 
-   fftshift(imgLo_FFTS_output,imgLo_input,256,256,(256/2),(256/2));
-   fftshift(imgHi_FFTS_output,imgHi_input,256,256,(256/2),(256/2));
+   GaussFilter(256,256,img_FFTS_output,0);
 
-   // Gaussian filtering with different co-efficients for two images
+   fftshift(img_IFFTS_output,img_FFTS_output,256,256,(256/2),(256/2));
 
-   GaussFilter(256,256,imgLo_FFTS_output,0);
-   GaussFilter(256,256,imgHi_FFTS_output,1);
-
-   // FFT inverse shift
-
-   fftshift(imgLo_IFFTS_output,imgLo_FFTS_output,256,256,(256/2),(256/2));
-   fftshift(imgHi_IFFTS_output,imgHi_FFTS_output,256,256,(256/2),(256/2));
-
-   // Inverse FFT
-
-   FFT(-1,intImgSize,imgLo_IFFTS_output);
-   FFT(-1,intImgSize,imgHi_IFFTS_output);
-
-   // Normalizing the hybrid image
+   FFT(-1,intImgSize,img_IFFTS_output);
 
    for(int k = 0; k<65536;k++)
     {
-        hybrid_output[k] = imgLo_IFFTS_output[k] + imgHi_IFFTS_output[k];
+        hybrid_output[k] = img_IFFTS_output[k];
+    }
+
+   FFT(1, intImgSize, imgHi_input);
+   fftshift(img_FFTS_output,imgHi_input,256,256,(256/2),(256/2));
+   GaussFilter(256,256,img_FFTS_output,1);
+   fftshift(img_IFFTS_output,img_FFTS_output,256,256,(256/2),(256/2));
+   FFT(-1,intImgSize,img_IFFTS_output);
+   for(int k = 0; k<65536;k++)
+    {
+        hybrid_output[k] = hybrid_output[k] + img_IFFTS_output[k];
     }
 
    normalize(hybrid_output, imgOutput);
