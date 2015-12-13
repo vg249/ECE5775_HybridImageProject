@@ -11,7 +11,7 @@ add_files -tb data/marilyn1.png
 add_files -tb data/einstein.png
 
 # Set top module of the design
-set_top hybrid_image
+set_top dut
 
 # Solution settings
 open_solution -reset solution1

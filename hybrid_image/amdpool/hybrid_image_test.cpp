@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <sstream>
-#include "fft.h"
+#include "hybrid_image.h"
 #include <stdio.h>
 #include "timer.h"
 

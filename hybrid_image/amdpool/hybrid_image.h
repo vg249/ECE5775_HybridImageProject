@@ -1,6 +1,6 @@
 
 #include "ap_fixed.h"
-#include "hls_fft.h"
+//#include "hls_fft.h"
 #include <complex>
 #include "ap_int.h"
 #include<hls_stream.h>
@@ -22,20 +22,16 @@ typedef std::complex<data_out_t> cmpxDataOut;
 
 using namespace std;
 
-struct config1 : hls::ip_fft::params_t {
-    static const unsigned ordering_opt = hls::ip_fft::natural_order;
+//struct config1 : hls::ip_fft::params_t {
+//    static const unsigned ordering_opt = hls::ip_fft::natural_order;
+//
+//    static const unsigned config_width = FFT_CONFIG_WIDTH;
+//};
 
-    static const unsigned config_width = FFT_CONFIG_WIDTH;
-};
+//typedef hls::ip_fft::config_t<config1> config_t;
+//typedef hls::ip_fft::status_t<config1> status_t;
 
-typedef hls::ip_fft::config_t<config1> config_t;
-typedef hls::ip_fft::status_t<config1> status_t;
-
-void dut(
-    hls::stream<bit32_t> &strm_in1,
-    hls::stream<bit32_t> &strm_in2,
-    hls::stream<bit32_t> &strm_out
-);
+void dut( hls::stream<bit32_t> &strm_in1, hls::stream<bit32_t> &strm_in2, hls::stream<bit32_t> &strm_out);
 
 void FFT(int dir, long m, complex <double> x[]);
 

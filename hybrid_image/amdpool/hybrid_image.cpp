@@ -4,7 +4,7 @@
 // @brief: A Hybrid imaging of 2 images with different fitering
 
 //#include "CImg.h"
-#include "fft.h"
+#include "hybrid_image.h"
 //#include <cmath>
 //#include <iostream>
 //#include <string.h>
