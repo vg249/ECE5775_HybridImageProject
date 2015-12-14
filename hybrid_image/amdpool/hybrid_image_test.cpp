@@ -16,7 +16,36 @@
 using namespace std;
 using namespace cimg_library;
 
-#define BUF_SIZE 64
+#define BUF_SIZE 32
+
+//----------------------------------------------------------
+// Normalization
+//----------------------------------------------------------
+//normalize the output values between 0 and 255
+
+void normalize(complex<float> imgNormIn[4096], float imgNormOut[4096])
+{
+
+   float minValue = logf(sqrtf((imgNormIn[0].real()* imgNormIn[0].real()) + (imgNormIn[0].imag()*imgNormIn[0].imag())) + 1) ;
+   float maxValue = minValue;
+   float tempValue = 0;
+
+   for (int j = 0; j < 4096; j++)
+    {
+        tempValue = logf(sqrtf((imgNormIn[j].real()* imgNormIn[j].real()) + (imgNormIn[j].imag()*imgNormIn[j].imag())) + 1);
+            if(tempValue > maxValue){
+        maxValue = tempValue;}
+            if(tempValue < minValue){
+        minValue = tempValue;}
+            imgNormOut[j] = tempValue;
+    }
+
+   for(int k = 0; k<4096;k++)
+    {
+        imgNormOut[k] = ((imgNormOut[k] - minValue)*(255/(maxValue-minValue)));
+    }
+
+}
 
 
 int main()
@@ -34,7 +63,7 @@ int main()
 
   //float arrat declaration for output images
 
-  float xn_output[4096];
+  complex<float> xn_output[4096];
 
   //Image Output
     
@@ -56,8 +85,8 @@ int main()
   // Send data input images
   //--------------------------------------------------------------------
 
-//  bit64_t img1[4096];
-//  bit64_t img2[4096];
+//  bit32_t img1[4096];
+//  bit32_t img2[4096];
   bit32_t input1_lo;
   bit32_t input2_hi;
   for (int i = 0; i < 4096 ; i++ )
@@ -79,20 +108,24 @@ int main()
   //--------------------------------------------------------------------
   // Receive the hybrid image matrix
   //--------------------------------------------------------------------
-bit32_t hybrid_out;
+  bit32_t hybrid_out_r;
+  bit32_t hybrid_out_i;
+  float xn_output_norm[4096];
+
   for (int i = 0; i < 4096 ; i++ )
   {
-    hybrid_out = hybrid_image_out.read();
-    xn_output[i] = hybrid_out;
+    hybrid_out_r = hybrid_image_out.read();
+    hybrid_out_i = hybrid_image_out.read();
+    xn_output[i] = complex<float>(hybrid_out_r,hybrid_out_i);
   }
 
 //  timer.stop();
-
+  normalize(xn_output, xn_output_norm);
   //saving the output values as hybrid image
 
   for(int k = 0; k <4096 ;k++)
   {
-    imgOutput[k] = xn_output[k];
+    imgOutput[k] = xn_output_norm[k];
 //    printf("%f\n",xn_output[k]);
   }
 

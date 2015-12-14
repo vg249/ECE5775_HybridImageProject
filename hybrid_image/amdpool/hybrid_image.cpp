@@ -8,7 +8,7 @@
 //#include <cmath>
 //#include <iostream>
 //#include <string.h>
-//#include <complex>
+#include <complex>
 //#include "ap_int.h"
 //
 //#define PI 3.14159
@@ -27,7 +27,7 @@ void dut(
 )
 {
   // Declare the input and output variables
-  float out[4096];
+  complex<float> out[4096];
   complex<float> complex_In1[4096];
   complex<float> complex_In2[4096];
   float input_data_re = 0;
@@ -38,7 +38,8 @@ void dut(
   // Read the two input 32-bit words
   bit32_t input1_lo;
   bit32_t input2_hi;
-//  bit32_t output;
+  bit32_t output_r;
+  bit32_t output_i;
  
   for(int i = 0; i < 4096 ;i++) 
   {
@@ -68,12 +69,15 @@ void dut(
   // Output processing
   // ------------------------------------------------------
   // Write out the computed digit value
-
+  
   for(int i = 0; i < 4096 ;i++)  
   { 
 //    printf("%f\n",out[i]);
 //    output = out[i];
-    strm_out.write( out[i]);
+    output_r = out[i].real();
+    output_i = out[i].imag();
+    strm_out.write(output_r);
+    strm_out.write(output_i );
   }
 }
 
@@ -100,10 +104,10 @@ int jj = 0;
 //----------------------------------------------------------
 //FFT function
 
-void FFT(int dir, long m, complex <float> x[4096])
+void FFT(int dir, int m, complex <float> x[4096])
 {
    int i, i1, i2,j, k, l, l1, l2, n;
-   complex <float> tx, t1, u, c, temp;
+   complex <float>  t1, u, c, temp;
 
    // Calculate the number of points
 
@@ -230,13 +234,13 @@ void GaussFilter(int imgwidth, int imgheight, complex<float> F[4096], bool High)
 // @param[in] : input - 2 images
 // @return : the hybrid image
 
-void hybrid_image(int intImgSize, complex<float> imgLo_input[4096], complex<float> imgHi_input[4096],  float imgOutput[4096])
+void hybrid_image(int intImgSize, complex<float> imgLo_input[4096], complex<float> imgHi_input[4096],  complex<float> hybrid_output[4096])
 {
 
    complex<float> img_FFTS_output[4096];
    complex<float> img_IFFTS_output[4096];
 
-   complex<float> hybrid_output[4096];
+//   complex<float> hybrid_output[4096];
 
    FFT(1, intImgSize, imgLo_input);
 
