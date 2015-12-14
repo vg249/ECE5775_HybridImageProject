@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string.h>
 #include <complex>
+#include "timer.h"
 
 #define PI 3.14159
 
@@ -56,6 +57,11 @@ CImgList<double> GaussFilter(int imgwidth, int imgheight, CImgList<double> F, bo
 
 
 int main() {
+
+  // Timer
+
+  Timer timer("hybrid image CImg");
+  timer.start();
  
   //Reading the two images
 
@@ -104,4 +110,6 @@ int main() {
 
   CImgList<double> visu(img,mag);
   mag.save("hybrid_image.png");    // Save the image
+
+  timer.stop();
 } 
