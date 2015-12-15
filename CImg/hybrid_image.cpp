@@ -19,11 +19,11 @@ using namespace cimg_library;
 CImgList<double> GaussFilter(int imgwidth, int imgheight, CImgList<double> F, bool High)
 {
   double dist;
-  complex<double> H[64][64];   //Complex double array for saving Gaussian mask
+  complex<double> H[256][256];   //Complex double array for saving Gaussian mask
 
   double D0,D;
-  double B[4096];   //65536 is the total number pixels available in the image
-  double S[4096];  
+  double B[65536];   //65536 is the total number pixels available in the image
+  double S[65536];  
 
   //Calculating the gaussian mask. Magnitude and the Phase values are saved in seperate arrays.
   //Referenced from Online source. The mask is for low pass filter.
@@ -60,39 +60,60 @@ int main() {
 
   // Timer
 
-  Timer timer("hybrid image CImg");
-  timer.start();
+Timer timer("Reading CImg");
+timer.start();
  
   //Reading the two images
 
-  const CImg<double> imglo = CImg<double>("marilyn.png").resize(64,64).save("original.png");
-  const CImg<double> img   = CImg<double>("einstein.png").resize(64,64).save("originallo.png");
+  const CImg<double> imglo = CImg<double>("marilyn.png").resize(256,256).save("original.png");
+  const CImg<double> img   = CImg<double>("einstein.png").resize(256,256).save("originallo.png");
+timer.stop();
+
+//Timer timer("FFT CImg");
+//timer.start();
 
   //Applying fourier transform. Referenced it frm CImg.h. 
   //Returns list in 0 and 1 column. We assummed the values in 0 column are magnitude and 1 column are phase
-
   CImgList<double> F   = img.get_FFT();
   CImgList<double> Flo = imglo.get_FFT();
+//timer.stop();
+
+//Timer timer("shift CImg");
+//timer.start();
 
   //FFT Shift. Referenced from CImg.h
-
   cimglist_apply(F,shift)(img.width()/2,img.height()/2,0,0,2);
   cimglist_apply(Flo,shift)(imglo.width()/2,imglo.height()/2,0,0,2);
-
   // Apply the filtering with different co-efficients for two images
+//timer.stop();
+
+//Timer timer("Gaussian CImg");
+//timer.start();
 
   F   = GaussFilter(img.width(), img.height(),F,1); 
   Flo = GaussFilter(imglo.width(), imglo.height(),Flo,0); 
 
   // Inverse FFT shift
+//timer.stop();
 
+//Timer timer("Inverse shift CImg");
+//timer.start();
+  
   cimglist_apply(F,shift)(-img.width()/2,-img.height()/2,0,0,2);
   cimglist_apply(Flo,shift)(-imglo.width()/2,-imglo.height()/2,0,0,2);
   
   //Taking Inverse FFT of the Result
+//timer.stop();
+
+//Timer timer("Inverse FFT CImg");
+//timer.start();
 
   CImgList<double> FT   = F.get_FFT(true);
   CImgList<double> FTlo = Flo.get_FFT(true);
+//timer.stop();
+
+//Timer timer("Writing CImg");
+//timer.start();
   
   // Add the two images
 
@@ -110,6 +131,6 @@ int main() {
 
   CImgList<double> visu(img,mag);
   mag.save("hybrid_image.png");    // Save the image
+//timer.stop();
 
-  timer.stop();
 } 
