@@ -9,7 +9,8 @@
 
 
 INC_PATH=/usr/include/vivado_hls/2015.2
-CFLAGS = -I${INC_PATH} -O2 -L/usr/X11R6/lib -lm -lpthread -lX11
+#CFLAGS = -I${INC_PATH} -O2 -L/usr/X11R6/lib -lm -lpthread -lX11
+CFLAGS = -I${INC_PATH} -O2 -lm -lpthread -lX11
 
 all: sw
 
@@ -22,6 +23,9 @@ fpga: host.cpp
 	@echo "Compiling host program & running hybrid_image accelerator ..."
 	g++ ${CFLAGS} host.cpp -o hybrid_image-fpga
 	./hybrid_image-fpga
+
+hello: hello.cpp
+	g++ ${CFLAGS} hello.cpp -o hello
 
 # Clean up the directory before submission
 clean:
