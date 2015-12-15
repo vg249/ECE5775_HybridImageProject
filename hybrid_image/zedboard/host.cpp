@@ -35,6 +35,7 @@ int main(int argc, char** argv)
   //Image Output
 
   CImg<float> imgOutput(64,64,1,1,0);
+  float xn_output[4096];
 
   //Reading the images into float array using CImg Library
 
