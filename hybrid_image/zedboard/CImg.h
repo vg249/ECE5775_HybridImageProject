@@ -242,6 +242,7 @@
 #endif
 
 // Include display-specific headers.
+#define cimg_display 0
 #if cimg_display==1
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
