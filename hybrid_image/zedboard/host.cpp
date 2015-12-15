@@ -2,14 +2,19 @@
 #include<stdlib.h>
 #include<unistd.h>
 #include<fcntl.h>
-#include<math.h>
+#include<hls_math.h>
 #include<assert.h>
+#include <complex>
 
 #include<iostream>
 #include<fstream>
 
 #include "CImg.h"
 #include "timer.h"
+
+using namespace std;
+using namespace cimg_library;
+typedef ap_uint<32> bit32_t;
 
 //--------------------------------------
 // main function
@@ -27,15 +32,6 @@ int main(int argc, char** argv)
     exit(-1);
   }
 
-  //float array declaration for Input Images
-
-  complex<float> xnLo_input[4096];
-  complex<float> xnHi_input[4096];
-
-  //float arrat declaration for output images
-
-  float xn_output[4096];
-
   //Image Output
 
   CImg<float> imgOutput(64,64,1,1,0);
@@ -48,30 +44,29 @@ int main(int argc, char** argv)
   //Converting the image pixel values to complex numbers
 
   float input_data_re = 0;
+  int nbytes;
 
   // Timer
   Timer timer("digitrec FPGA");
+
+  timer.start();
 
   //--------------------------------------------------------------------
   // Send data input images
   //--------------------------------------------------------------------
 
-  bit32_t input1_lo;
-  bit32_t input2_hi;
   for (int i = 0; i < 4096 ; i++ )
   {
     bit32_t input1_lo = imgLo[i];
     bit32_t input2_hi = imgHi[i];
- 
+
     // Write words to the device
     nbytes = write (fdw, (void *)&input1_lo, sizeof(input1_lo));
     assert (nbytes == sizeof(input1_lo));
-    nbytes = write (fdw, (void *)&input2_lo, sizeof(input2_lo));
-    assert (nbytes == sizeof(input2_lo));
+    nbytes = write (fdw, (void *)&input2_hi, sizeof(input2_hi));
+    assert (nbytes == sizeof(input2_hi));
 
   }
-
-//  dut (hybrid_image_in1,hybrid_image_out);
 
   //--------------------------------------------------------------------
   // Receive the hybrid image matrix
@@ -81,11 +76,12 @@ int main(int argc, char** argv)
 
   for (int i = 0; i < 4096 ; i++ )
   {
-//    hybrid_out = hybrid_image_out.read();
     nbytes = read (fdr, (void *)&hybrid_out, sizeof(hybrid_out));
     assert (nbytes == sizeof(hybrid_out));
     xn_output[i] = hybrid_out;
   }
+
+  timer.stop();
 
   //saving the output values as hybrid image
 

@@ -19,11 +19,11 @@ using namespace cimg_library;
 CImgList<double> GaussFilter(int imgwidth, int imgheight, CImgList<double> F, bool High)
 {
   double dist;
-  complex<double> H[256][256];   //Complex double array for saving Gaussian mask
+  complex<double> H[64][64];   //Complex double array for saving Gaussian mask
 
   double D0,D;
-  double B[65536];   //65536 is the total number pixels available in the image
-  double S[65536];  
+  double B[4096];   //65536 is the total number pixels available in the image
+  double S[4096];  
 
   //Calculating the gaussian mask. Magnitude and the Phase values are saved in seperate arrays.
   //Referenced from Online source. The mask is for low pass filter.
@@ -65,8 +65,8 @@ int main() {
  
   //Reading the two images
 
-  const CImg<double> imglo = CImg<double>("marilyn.png").resize(256,256).save("original.png");
-  const CImg<double> img   = CImg<double>("einstein.png").resize(256,256).save("originallo.png");
+  const CImg<double> imglo = CImg<double>("marilyn.png").resize(64,64).save("original.png");
+  const CImg<double> img   = CImg<double>("einstein.png").resize(64,64).save("originallo.png");
 
   //Applying fourier transform. Referenced it frm CImg.h. 
   //Returns list in 0 and 1 column. We assummed the values in 0 column are magnitude and 1 column are phase
